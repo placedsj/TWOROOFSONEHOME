@@ -22,7 +22,8 @@ import {
   Headphones,
   StopCircle,
   PlayCircle,
-  ArrowRight
+  ArrowRight,
+  Info // Added Info icon import
 } from 'lucide-react';
 
 // --- Types & Data ---
@@ -147,7 +148,7 @@ const AGREEMENT_PAGES: AgreementPage[] = [
     content: (
       <div className="space-y-6 text-lg leading-relaxed text-slate-700">
         <h3 className="text-2xl font-serif font-bold text-royal-900">3.1 Parental Primacy</h3>
-        <p>The authority to raise Harper belongs exclusively and equally to Mom and Dad. Extended family—grandmothers, aunts, uncles—are loved guests in Harper's life. They have <span className="font-bold text-red-600">zero vote</span> in parenting decisions.</p>
+        <p>The authority to raise Harper belongs exclusively and equally to Mom and Dad. Extended family—grandmothers, aunts, uncles—are loved guests in Harper's life. They have <span className="relative group cursor-help ml-1"><span className="font-bold text-red-600">zero vote</span><Info size={14} className="inline-block ml-1 text-red-400" /><div className="absolute hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 p-3 bg-red-700 text-white text-xs rounded-lg shadow-lg whitespace-normal w-48 text-center z-20">No decision-making power on Harper's medical, educational, or routine daily matters.</div></span> in parenting decisions.</p>
 
         <h3 className="text-2xl font-serif font-bold text-royal-900 mt-8">3.3 Breaking the Cycle</h3>
         <p>The Mother's family of origin have operated as de facto co-parents. This agreement breaks that pattern.</p>
@@ -607,28 +608,42 @@ export default function App() {
       fullContent: (
         <div className="space-y-6">
            <div className="flex items-center justify-center p-8 bg-slate-50 rounded-xl">
-              <div className="relative w-64 h-64">
+              <div className="relative w-80 h-80"> {/* Increased size for better visual impact */}
+                {/* Outermost Ring: Excluded Zone (static, dashed, red) */}
+                <div className="absolute inset-[-60px] border-4 border-dashed border-red-300 rounded-full flex items-center justify-center opacity-60">
+                   <span className="absolute -top-10 text-sm font-bold text-red-600 uppercase tracking-wide px-4 py-1 rounded-full bg-red-50/70 backdrop-blur-sm">The Excluded Zone</span>
+                </div>
+
+                {/* Middle Ring: Mom & Dad Unified (static, solid, gold, protective) */}
+                <div className="absolute inset-[-20px] border-4 border-gold-500 rounded-full flex items-center justify-center z-0 shadow-lg shadow-gold-500/20">
+                   <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white bg-gold-600 px-4 py-2 rounded-full font-bold text-lg whitespace-nowrap">Mom & Dad Unified</span>
+                </div>
+
+                {/* Inner Circle: HARPER Protected Core */}
                 <div className="absolute inset-0 border-4 border-royal-900 rounded-full flex items-center justify-center z-10 bg-white">
                   <div className="text-center">
-                    <div className="font-bold text-xl text-royal-900">HARPER</div>
+                    <div className="font-bold text-3xl text-royal-900">HARPER</div>
                     <div className="text-sm text-slate-500">Protected Core</div>
                   </div>
                 </div>
-                <div className="absolute -inset-4 border-2 border-dashed border-gold-500 rounded-full flex items-start justify-center pt-1 animate-spin-slow z-0">
-                   {/* Ring graphic */}
-                </div>
-                <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-royal-900 text-white px-3 py-1 rounded-full text-sm font-bold">Mom & Dad Only</div>
               </div>
            </div>
 
            <div className="grid md:grid-cols-2 gap-6">
-             <div className="border border-red-200 bg-red-50 p-4 rounded-lg">
+             <div className="border border-red-200 bg-red-50 p-4 rounded-lg group hover:border-red-400 transition-colors"> {/* Added group and hover effect */}
                <h4 className="font-bold text-red-800 mb-4 flex items-center gap-2">
-                 <X size={20} /> Excluded (Zero Vote)
+                 <X size={20} /> Excluded 
+                 <span className="relative cursor-help ml-1"> {/* This span triggers the Info tooltip */}
+                   <span className="font-bold text-red-600">Zero Vote</span>
+                   <Info size={14} className="inline-block ml-1 text-red-400 group-hover:text-red-600 transition-colors" /> {/* Emphasize Info icon on group hover */}
+                   <div className="absolute hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 p-3 bg-red-700 text-white text-xs rounded-lg shadow-lg whitespace-normal w-48 text-center z-20">
+                     No decision-making power on Harper's medical, educational, or routine daily matters.
+                   </div>
+                 </span>
                </h4>
                
                <div className="space-y-3">
-                 <div className="flex items-start gap-3 p-2 bg-white/60 rounded border border-red-100">
+                 <div className="flex items-start gap-3 p-2 bg-white/60 rounded border border-red-100 group-hover:border-red-300 transition-colors">
                    <div className="bg-red-100 p-1 rounded text-red-600 mt-0.5"><Users size={14} /></div>
                    <div>
                      <span className="font-bold text-red-900 text-sm block">Grandparents</span>
@@ -636,7 +651,7 @@ export default function App() {
                    </div>
                  </div>
                  
-                 <div className="flex items-start gap-3 p-2 bg-white/60 rounded border border-red-100">
+                 <div className="flex items-start gap-3 p-2 bg-white/60 rounded border border-red-100 group-hover:border-red-300 transition-colors">
                     <div className="bg-red-100 p-1 rounded text-red-600 mt-0.5"><Users size={14} /></div>
                    <div>
                      <span className="font-bold text-red-900 text-sm block">Aunts & Uncles</span>
@@ -644,7 +659,7 @@ export default function App() {
                    </div>
                  </div>
 
-                 <div className="flex items-start gap-3 p-2 bg-white/60 rounded border border-red-100">
+                 <div className="flex items-start gap-3 p-2 bg-white/60 rounded border border-red-100 group-hover:border-red-300 transition-colors">
                     <div className="bg-red-100 p-1 rounded text-red-600 mt-0.5"><Users size={14} /></div>
                    <div>
                      <span className="font-bold text-red-900 text-sm block">Extended Kin</span>
