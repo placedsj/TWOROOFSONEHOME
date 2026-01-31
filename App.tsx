@@ -322,19 +322,21 @@ const TimelinePhase = ({ phase, title, time, status, onClick }: { phase: string,
   };
 
   return (
-    <div 
+    <button
+      type="button"
       onClick={onClick}
-      className={`relative flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all hover:-translate-y-1 ${colors[status]} group`}
+      aria-current={status === 'current' ? 'step' : undefined}
+      className={`relative flex-1 w-full text-left p-4 rounded-lg border-2 cursor-pointer transition-all hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-royal-500 focus-visible:ring-offset-2 ${colors[status]} group`}
     >
-      <div className="text-xs font-bold uppercase tracking-widest opacity-80 mb-1">{phase}</div>
-      <div className="font-serif font-bold text-lg mb-2">{title}</div>
-      <div className="text-xs font-medium opacity-90">{time}</div>
+      <span className="block text-xs font-bold uppercase tracking-widest opacity-80 mb-1">{phase}</span>
+      <span className="block font-serif font-bold text-lg mb-2">{title}</span>
+      <span className="block text-xs font-medium opacity-90">{time}</span>
       {status === 'current' && (
-        <div className="absolute -top-3 -right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
+        <span className="absolute -top-3 -right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
           ACTIVE
-        </div>
+        </span>
       )}
-    </div>
+    </button>
   );
 };
 
