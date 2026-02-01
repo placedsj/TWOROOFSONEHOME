@@ -322,20 +322,19 @@ const TimelinePhase = ({ phase, title, time, status, onClick }: { phase: string,
   };
 
   return (
-    <button
-      type="button"
+    <div 
       onClick={onClick}
-      className={`relative flex-1 w-full text-left p-4 rounded-lg border-2 cursor-pointer transition-all hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold-500 ${colors[status]} group`}
+      className={`relative flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all hover:-translate-y-1 ${colors[status]} group`}
     >
-      <span className="block text-xs font-bold uppercase tracking-widest opacity-80 mb-1">{phase}</span>
-      <span className="block font-serif font-bold text-lg mb-2">{title}</span>
-      <span className="block text-xs font-medium opacity-90">{time}</span>
+      <div className="text-xs font-bold uppercase tracking-widest opacity-80 mb-1">{phase}</div>
+      <div className="font-serif font-bold text-lg mb-2">{title}</div>
+      <div className="text-xs font-medium opacity-90">{time}</div>
       {status === 'current' && (
-        <span className="absolute -top-3 -right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
+        <div className="absolute -top-3 -right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
           ACTIVE
-        </span>
+        </div>
       )}
-    </button>
+    </div>
   );
 };
 
@@ -602,7 +601,7 @@ export default function App() {
     },
     {
       id: 'circle',
-      title: 'Circle of Two',
+      title: 'The Circle of Two',
       category: 'custody',
       icon: <Users className="w-8 h-8 text-royal-500" />,
       shortDesc: 'Decisions are made by Mom and Dad. Not by extended family.',
@@ -611,12 +610,17 @@ export default function App() {
            <div className="flex items-center justify-center p-8 bg-slate-50 rounded-xl">
               <div className="relative w-80 h-80"> {/* Increased size for better visual impact */}
                 {/* Outermost Ring: Excluded Zone (static, dashed, red) */}
-                <div className="absolute inset-[-60px] border-4 border-dashed border-red-300 rounded-full flex items-center justify-center opacity-60">
+                <div className="absolute inset-[-60px] border-4 border-dashed border-red-300 rounded-full flex items-center justify-center opacity-60 animate-spin-slow">
                    <span className="absolute -top-10 text-sm font-bold text-red-600 uppercase tracking-wide px-4 py-1 rounded-full bg-red-50/70 backdrop-blur-sm">The Excluded Zone</span>
                 </div>
 
                 {/* Middle Ring: Mom & Dad Unified (static, solid, gold, protective) */}
                 <div className="absolute inset-[-20px] border-4 border-gold-500 rounded-full flex items-center justify-center z-0 shadow-lg shadow-gold-500/20">
+                   {/* Visual separation with labels */}
+                   <div className="absolute w-full h-full flex flex-col justify-center items-center">
+                     <span className="absolute top-[calc(50%-40px)] left-1/2 -translate-x-1/2 -translate-y-full text-gold-900 font-bold text-sm bg-gold-100/70 px-2 py-1 rounded-full whitespace-nowrap">Mother's Sole Authority</span>
+                     <span className="absolute bottom-[calc(50%-40px)] left-1/2 -translate-x-1/2 translate-y-full text-gold-900 font-bold text-sm bg-gold-100/70 px-2 py-1 rounded-full whitespace-nowrap">Father's Joint Responsibility</span>
+                   </div>
                    <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white bg-gold-600 px-4 py-2 rounded-full font-bold text-lg whitespace-nowrap">Mom & Dad Unified</span>
                 </div>
 
@@ -637,8 +641,8 @@ export default function App() {
                  <span className="relative cursor-help ml-1"> {/* This span triggers the Info tooltip */}
                    <span className="font-bold text-red-600">Zero Vote</span>
                    <Info size={14} className="inline-block ml-1 text-red-400 group-hover:text-red-600 transition-colors" /> {/* Emphasize Info icon on group hover */}
-                   <div className="absolute hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 p-3 bg-red-700 text-white text-xs rounded-lg shadow-lg whitespace-normal w-48 text-center z-20">
-                     No decision-making power on Harper's medical, educational, or routine daily matters.
+                   <div className="absolute hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 p-3 bg-red-700 text-white text-xs rounded-lg shadow-lg whitespace-normal w-64 text-center z-20">
+                     No decision-making power on Harper's medical care, schooling, daily routine, or extracurricular activities.
                    </div>
                  </span>
                </h4>
@@ -648,7 +652,7 @@ export default function App() {
                    <div className="bg-red-100 p-1 rounded text-red-600 mt-0.5"><Users size={14} /></div>
                    <div>
                      <span className="font-bold text-red-900 text-sm block">Grandparents</span>
-                     <span className="text-xs text-red-700">Love without authority. No vote on medical, school, or routine.</span>
+                     <span className="text-xs text-red-700">Love without authority. Not decision-makers.</span>
                    </div>
                  </div>
                  
@@ -670,8 +674,18 @@ export default function App() {
                </div>
              </div>
              <div className="border border-royal-200 bg-royal-50 p-4 rounded-lg">
-               <h4 className="font-bold text-royal-800 mb-2">The "Jane Block"</h4>
-               <p className="text-sm text-royal-700">6-Month Cooling-Off Period. Zero contact with maternal grandmother to allow Emma to establish independent parenting identity.</p>
+               <h4 className="font-bold text-royal-800 mb-3">The "Jane Block"</h4>
+               <p className="text-sm text-royal-700 mb-4">A mandatory 6-month cooling-off period where the maternal grandmother has zero contact. Designed to allow Emma to establish her independent parenting identity and autonomy.</p>
+               
+               <div className="flex justify-between text-sm mb-2">
+                  <span className="font-medium text-slate-700">Progress</span>
+                  <span className="font-bold text-gold-600">Month 1/6</span>
+               </div>
+               <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-gold-500 w-[16.6%] rounded-full relative">
+                     <div className="absolute right-0 top-0 bottom-0 w-1 bg-white/50 animate-pulse"></div>
+                  </div>
+               </div>
              </div>
            </div>
         </div>
