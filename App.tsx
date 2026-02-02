@@ -289,7 +289,7 @@ const Modal = ({ isOpen, onClose, title, children }: { isOpen: boolean; onClose:
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
         <div className="bg-royal-800 p-6 flex justify-between items-center text-white shrink-0">
           <h2 className="text-2xl font-serif font-bold">{title}</h2>
-          <button onClick={onClose} className="p-2 hover:bg-royal-700 rounded-full transition-colors">
+          <button onClick={onClose} aria-label="Close modal" className="p-2 hover:bg-royal-700 rounded-full transition-colors">
             <X size={24} />
           </button>
         </div>
@@ -795,6 +795,7 @@ export default function App() {
           <div className="flex gap-2">
             <button 
               onClick={() => setShowAuditLog(true)}
+              aria-label="View Alert Log"
               className="flex items-center gap-2 px-3 md:px-4 py-2 bg-royal-800 hover:bg-royal-700 rounded-lg transition-colors border border-royal-700 relative"
             >
               <Bell size={18} />
@@ -807,6 +808,7 @@ export default function App() {
             </button>
             <button 
               onClick={() => setShowReader(true)}
+              aria-label="Read Agreement"
               className="flex items-center gap-2 px-3 md:px-4 py-2 bg-gold-600 hover:bg-gold-500 rounded-lg transition-colors text-white font-medium border border-gold-500 shadow-lg shadow-gold-500/20"
             >
               <Scroll size={18} />
@@ -814,6 +816,7 @@ export default function App() {
             </button>
             <button 
               onClick={() => setShowGlossary(true)}
+              aria-label="View Glossary"
               className="flex items-center gap-2 px-3 md:px-4 py-2 bg-royal-800 hover:bg-royal-700 rounded-lg transition-colors border border-royal-700"
             >
               <BookOpen size={18} />
@@ -972,6 +975,7 @@ export default function App() {
              <div className="flex items-center gap-3">
                <button 
                  onClick={toggleSpeech}
+                 aria-label={isSpeaking ? "Stop reading" : "Start reading"}
                  className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all ${
                    isSpeaking 
                      ? 'bg-red-500 text-white animate-pulse' 
@@ -988,7 +992,7 @@ export default function App() {
                    </>
                  )}
                </button>
-               <button onClick={() => setShowReader(false)} className="p-2 hover:bg-royal-800 rounded-full">
+               <button onClick={() => setShowReader(false)} aria-label="Close reader mode" className="p-2 hover:bg-royal-800 rounded-full">
                  <X size={24} />
                </button>
              </div>
@@ -1059,7 +1063,7 @@ export default function App() {
                  </div>
                  <h2 className="text-2xl font-serif font-bold text-royal-900">Audit Log</h2>
               </div>
-              <button onClick={() => setShowAuditLog(false)} className="p-2 hover:bg-slate-100 rounded-full">
+              <button onClick={() => setShowAuditLog(false)} aria-label="Close audit log" className="p-2 hover:bg-slate-100 rounded-full">
                 <X size={24} />
               </button>
             </div>
@@ -1103,7 +1107,7 @@ export default function App() {
           <div className="relative w-full max-w-md bg-white h-full shadow-2xl p-8 overflow-y-auto animate-in slide-in-from-right duration-300">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-serif font-bold text-royal-900">Key Terms Glossary</h2>
-              <button onClick={() => setShowGlossary(false)} className="p-2 hover:bg-slate-100 rounded-full">
+              <button onClick={() => setShowGlossary(false)} aria-label="Close glossary" className="p-2 hover:bg-slate-100 rounded-full">
                 <X size={24} />
               </button>
             </div>
