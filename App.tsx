@@ -289,7 +289,7 @@ const Modal = ({ isOpen, onClose, title, children }: { isOpen: boolean; onClose:
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
         <div className="bg-royal-800 p-6 flex justify-between items-center text-white shrink-0">
           <h2 className="text-2xl font-serif font-bold">{title}</h2>
-          <button onClick={onClose} className="p-2 hover:bg-royal-700 rounded-full transition-colors">
+          <button onClick={onClose} aria-label="Close modal" className="p-2 hover:bg-royal-700 rounded-full transition-colors">
             <X size={24} />
           </button>
         </div>
@@ -322,9 +322,10 @@ const TimelinePhase = ({ phase, title, time, status, onClick }: { phase: string,
   };
 
   return (
-    <div 
+    <button
+      type="button"
       onClick={onClick}
-      className={`relative flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all hover:-translate-y-1 ${colors[status]} group`}
+      className={`relative flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all hover:-translate-y-1 w-full text-left ${colors[status]} group`}
     >
       <div className="text-xs font-bold uppercase tracking-widest opacity-80 mb-1">{phase}</div>
       <div className="font-serif font-bold text-lg mb-2">{title}</div>
@@ -334,7 +335,7 @@ const TimelinePhase = ({ phase, title, time, status, onClick }: { phase: string,
           ACTIVE
         </div>
       )}
-    </div>
+    </button>
   );
 };
 
@@ -795,6 +796,7 @@ export default function App() {
           <div className="flex gap-2">
             <button 
               onClick={() => setShowAuditLog(true)}
+              aria-label="View alert log"
               className="flex items-center gap-2 px-3 md:px-4 py-2 bg-royal-800 hover:bg-royal-700 rounded-lg transition-colors border border-royal-700 relative"
             >
               <Bell size={18} />
@@ -807,6 +809,7 @@ export default function App() {
             </button>
             <button 
               onClick={() => setShowReader(true)}
+              aria-label="Read agreement"
               className="flex items-center gap-2 px-3 md:px-4 py-2 bg-gold-600 hover:bg-gold-500 rounded-lg transition-colors text-white font-medium border border-gold-500 shadow-lg shadow-gold-500/20"
             >
               <Scroll size={18} />
@@ -814,6 +817,7 @@ export default function App() {
             </button>
             <button 
               onClick={() => setShowGlossary(true)}
+              aria-label="View glossary"
               className="flex items-center gap-2 px-3 md:px-4 py-2 bg-royal-800 hover:bg-royal-700 rounded-lg transition-colors border border-royal-700"
             >
               <BookOpen size={18} />
@@ -908,10 +912,11 @@ export default function App() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sections.map((section) => (
-              <div 
+              <button
                 key={section.id}
+                type="button"
                 onClick={() => setActiveSection(section.id)}
-                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer border border-slate-100 group"
+                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer border border-slate-100 group w-full text-left"
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="p-3 bg-slate-50 rounded-lg group-hover:bg-royal-50 transition-colors">
@@ -922,7 +927,7 @@ export default function App() {
                 <h4 className="text-xl font-bold text-royal-900 mb-2 font-serif">{section.title}</h4>
                 <p className="text-slate-600 text-sm leading-relaxed mb-4">{section.shortDesc}</p>
                 <span className="text-xs font-bold text-gold-600 uppercase tracking-widest group-hover:underline">View Details</span>
-              </div>
+              </button>
             ))}
           </div>
         </div>
@@ -988,7 +993,7 @@ export default function App() {
                    </>
                  )}
                </button>
-               <button onClick={() => setShowReader(false)} className="p-2 hover:bg-royal-800 rounded-full">
+               <button onClick={() => setShowReader(false)} aria-label="Close reader" className="p-2 hover:bg-royal-800 rounded-full">
                  <X size={24} />
                </button>
              </div>
@@ -1059,7 +1064,7 @@ export default function App() {
                  </div>
                  <h2 className="text-2xl font-serif font-bold text-royal-900">Audit Log</h2>
               </div>
-              <button onClick={() => setShowAuditLog(false)} className="p-2 hover:bg-slate-100 rounded-full">
+              <button onClick={() => setShowAuditLog(false)} aria-label="Close audit log" className="p-2 hover:bg-slate-100 rounded-full">
                 <X size={24} />
               </button>
             </div>
@@ -1103,7 +1108,7 @@ export default function App() {
           <div className="relative w-full max-w-md bg-white h-full shadow-2xl p-8 overflow-y-auto animate-in slide-in-from-right duration-300">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-serif font-bold text-royal-900">Key Terms Glossary</h2>
-              <button onClick={() => setShowGlossary(false)} className="p-2 hover:bg-slate-100 rounded-full">
+              <button onClick={() => setShowGlossary(false)} aria-label="Close glossary" className="p-2 hover:bg-slate-100 rounded-full">
                 <X size={24} />
               </button>
             </div>
