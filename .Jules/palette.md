@@ -1,0 +1,3 @@
+## 2025-02-05 - Improving Keyboard Accessibility in Interactive Cards
+**Learning:** In React apps using Tailwind, clickable `div`s with `onClick` handlers are common for cards or list items. However, these are inaccessible to keyboard users as they don't receive focus and don't respond to Enter/Space keys by default. Converting these to `<button>` elements (with `type="button"` and `w-full text-left` to preserve layout) is a high-impact, low-effort way to fix this.
+**Action:** When auditing interactive lists or cards, always check if they are `div`s or `button`s. If they are `div`s, refactor to `button`s to get native keyboard support for free.
