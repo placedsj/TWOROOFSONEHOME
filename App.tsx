@@ -391,6 +391,18 @@ export default function App() {
     }
   }, [readerPage, showReader]);
 
+  // Keyboard navigation for Reader
+  useEffect(() => {
+    if (!showReader) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') setReaderPage(p => Math.max(0, p - 1));
+      if (e.key === 'ArrowRight') setReaderPage(p => Math.min(AGREEMENT_PAGES.length - 1, p + 1));
+      if (e.key === 'Escape') setShowReader(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showReader]);
+
   const toggleSpeech = () => {
     if (isSpeaking) {
       synth.cancel();
@@ -987,7 +999,12 @@ export default function App() {
 
       {/* Full Agreement Reader Mode */}
       {showReader && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-slate-100">
+        <div
+          className="fixed inset-0 z-50 flex flex-col bg-slate-100"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Agreement Reader"
+        >
           <div className="bg-royal-900 text-white p-4 shadow-lg flex justify-between items-center shrink-0">
              <div className="flex items-center gap-3">
                <div className="p-2 bg-royal-800 rounded-lg"><Scroll size={20}/></div>
@@ -1050,9 +1067,14 @@ export default function App() {
              <button 
                onClick={() => setReaderPage(p => Math.max(0, p - 1))}
                disabled={readerPage === 0}
-               className="flex items-center gap-2 px-6 py-3 rounded-lg font-bold disabled:opacity-30 hover:bg-slate-100 transition-colors"
+               title="Press Left Arrow"
+               className="flex items-center gap-2 px-6 py-3 rounded-lg font-bold disabled:opacity-30 hover:bg-slate-100 transition-colors group"
              >
-               <ChevronLeft size={20} /> Previous
+               <ChevronLeft size={20} />
+               <div className="flex flex-col items-start">
+                 <span>Previous</span>
+                 <span className="hidden md:block text-[10px] font-normal text-slate-400 group-hover:text-slate-600 leading-none">Press ←</span>
+               </div>
              </button>
              
              <div className="flex gap-1">
@@ -1067,9 +1089,14 @@ export default function App() {
              <button 
                onClick={() => setReaderPage(p => Math.min(AGREEMENT_PAGES.length - 1, p + 1))}
                disabled={readerPage === AGREEMENT_PAGES.length - 1}
-               className="flex items-center gap-2 px-6 py-3 bg-royal-900 text-white rounded-lg font-bold disabled:opacity-30 hover:bg-royal-800 transition-colors shadow-lg"
+               title="Press Right Arrow"
+               className="flex items-center gap-2 px-6 py-3 bg-royal-900 text-white rounded-lg font-bold disabled:opacity-30 hover:bg-royal-800 transition-colors shadow-lg group"
              >
-               Next <ChevronRight size={20} />
+               <div className="flex flex-col items-end">
+                 <span>Next</span>
+                 <span className="hidden md:block text-[10px] font-normal text-royal-300 group-hover:text-royal-100 leading-none">Press →</span>
+               </div>
+               <ChevronRight size={20} />
              </button>
           </div>
         </div>
