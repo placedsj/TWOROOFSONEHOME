@@ -1,0 +1,1 @@
+// This file is deprecated in favor of index.tsx. Please use the .tsx entry.

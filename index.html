@@ -5,45 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Harper Baseline</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@400;500;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
+        darkMode: ["class"],
         theme: {
           extend: {
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-              serif: ['Playfair Display', 'serif'],
+            borderRadius: {
+              lg: ".5625rem",
+              md: ".375rem",
+              sm: ".1875rem",
             },
             colors: {
               royal: {
-                50: '#f0f4ff',
-                100: '#e0eaff',
-                500: '#6366f1',
-                800: '#1e1b4b',
-                900: '#0f0e26',
+                50: "#f0f4f8",
+                100: "#d9e2ec",
+                200: "#bcccdc",
+                300: "#9fb3c8",
+                400: "#829ab1",
+                500: "#627d98",
+                600: "#486581",
+                700: "#334e68",
+                800: "#243b53",
+                900: "#102a43",
               },
               gold: {
-                500: '#d97706',
-                600: '#b45309',
+                50: "#fffbeb",
+                100: "#fcefc7",
+                200: "#fae3a3",
+                300: "#fcd34d",
+                400: "#fbbf24",
+                500: "#f59e0b",
+                600: "#d97706",
+                700: "#b45309",
+                800: "#92400e",
+                900: "#78350f",
+              },
+            },
+            fontFamily: {
+              sans: ["'DM Sans'", "sans-serif"],
+              display: ["'Outfit'", "sans-serif"],
+              serif: ["'Playfair Display'", "serif"],
+            },
+            animation: {
+              "spin-slow": "spin-slow 20s linear infinite",
+              "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+            },
+            keyframes: {
+              "spin-slow": {
+                "0%": { transform: "rotate(0deg)" },
+                "100%": { transform: "rotate(360deg)" },
               }
             }
-          }
-        }
-      }
+          },
+        },
+      };
     </script>
-  <script type="importmap">
+    <script type="importmap">
 {
   "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3"
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+    "lucide-react": "https://esm.sh/lucide-react@0.460.0",
+    "wouter": "https://esm.sh/wouter@3.3.5",
+    "@tanstack/react-query": "https://esm.sh/@tanstack/react-query@5.62.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
   }
 }
 </script>
-</head>
-  <body class="bg-slate-50 text-slate-900 antialiased">
+  </head>
+  <body class="bg-slate-50 text-slate-900 antialiased font-sans">
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
+    <script type="module" src="index.tsx"></script>
   </body>
 </html>
