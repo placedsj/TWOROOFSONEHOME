@@ -1,1 +1,1 @@
-// This file is deprecated in favor of index.tsx. Please use the .tsx entry.
+// Legacy JS entry disabled to resolve preview conflict. Using index.tsx.

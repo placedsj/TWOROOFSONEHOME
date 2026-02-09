@@ -1,1 +1,1 @@
-// This file is deprecated in favor of App.tsx.
+// Legacy JS entry disabled. Using App.tsx.

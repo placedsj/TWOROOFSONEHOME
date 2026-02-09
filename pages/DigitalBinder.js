@@ -1,1 +1,1 @@
-// This file is deprecated in favor of DigitalBinder.tsx.
+// Legacy JS file disabled. Using pages/DigitalBinder.tsx.
