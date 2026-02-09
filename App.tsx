@@ -16,6 +16,7 @@ function Router() {
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
         <div className="bg-royal-800 p-6 flex justify-between items-center text-white shrink-0">
           <h2 className="text-2xl font-serif font-bold">{title}</h2>
+          <button onClick={onClose} className="p-2 hover:bg-royal-700 rounded-full transition-colors" aria-label="Close modal">
           <button onClick={onClose} aria-label="Close modal" className="p-2 hover:bg-royal-700 rounded-full transition-colors">
             <X size={24} />
           </button>
@@ -49,6 +50,11 @@ const TimelinePhase = ({ phase, title, time, status, onClick }: { phase: string,
   };
 
   return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`relative flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all hover:-translate-y-1 ${colors[status]} group text-left w-full focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-royal-500 outline-none`}
+      aria-label={`View details for ${title} (${phase}), status: ${status}`}
     <div 
       role="button"
       tabIndex={0}
@@ -65,7 +71,7 @@ const TimelinePhase = ({ phase, title, time, status, onClick }: { phase: string,
           ACTIVE
         </div>
       )}
-    </div>
+    </button>
   );
 };
     <Switch>
@@ -293,6 +299,7 @@ export default function App() {
                    </>
                  )}
                </button>
+               <button onClick={() => setShowReader(false)} className="p-2 hover:bg-royal-800 rounded-full" aria-label="Close reader">
                <button onClick={() => setShowReader(false)} aria-label="Close reader" className="p-2 hover:bg-royal-800 rounded-full">
                  <X size={24} />
                </button>
@@ -364,6 +371,7 @@ export default function App() {
                  </div>
                  <h2 className="text-2xl font-serif font-bold text-royal-900">Audit Log</h2>
               </div>
+              <button onClick={() => setShowAuditLog(false)} className="p-2 hover:bg-slate-100 rounded-full" aria-label="Close audit log">
               <button onClick={() => setShowAuditLog(false)} aria-label="Close audit log" className="p-2 hover:bg-slate-100 rounded-full">
                 <X size={24} />
               </button>
@@ -408,6 +416,7 @@ export default function App() {
           <div className="relative w-full max-w-md bg-white h-full shadow-2xl p-8 overflow-y-auto animate-in slide-in-from-right duration-300">
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-serif font-bold text-royal-900">Key Terms Glossary</h2>
+              <button onClick={() => setShowGlossary(false)} className="p-2 hover:bg-slate-100 rounded-full" aria-label="Close glossary">
               <button onClick={() => setShowGlossary(false)} aria-label="Close glossary" className="p-2 hover:bg-slate-100 rounded-full">
                 <X size={24} />
               </button>
