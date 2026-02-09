@@ -53,6 +53,8 @@ const TimelinePhase = ({ phase, title, time, status, onClick }: { phase: string,
     <button
       type="button"
       onClick={onClick}
+      className={`relative flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all hover:-translate-y-1 w-full text-left ${colors[status]} group`}
+      onClick={onClick}
       aria-current={status === 'current' ? 'step' : undefined}
       className={`relative flex-1 w-full text-left p-4 rounded-lg border-2 cursor-pointer transition-all hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-royal-500 focus-visible:ring-offset-2 ${colors[status]} group`}
       onClick={onClick}
@@ -102,6 +104,7 @@ export default function App() {
           <div className="flex gap-2">
             <button 
               onClick={() => setShowAuditLog(true)}
+              aria-label="View alert log"
               aria-label="View Alert Log"
               aria-label="Alert Log"
               className="flex items-center gap-2 px-3 md:px-4 py-2 bg-royal-800 hover:bg-royal-700 rounded-lg transition-colors border border-royal-700 relative"
@@ -116,6 +119,7 @@ export default function App() {
             </button>
             <button 
               onClick={() => setShowReader(true)}
+              aria-label="Read agreement"
               aria-label="Read Agreement"
               className="flex items-center gap-2 px-3 md:px-4 py-2 bg-gold-600 hover:bg-gold-500 rounded-lg transition-colors text-white font-medium border border-gold-500 shadow-lg shadow-gold-500/20"
             >
@@ -124,6 +128,7 @@ export default function App() {
             </button>
             <button 
               onClick={() => setShowGlossary(true)}
+              aria-label="View glossary"
               aria-label="View Glossary"
               aria-label="Glossary"
               className="flex items-center gap-2 px-3 md:px-4 py-2 bg-royal-800 hover:bg-royal-700 rounded-lg transition-colors border border-royal-700"
@@ -220,8 +225,11 @@ export default function App() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {sections.map((section) => (
-              <div 
+              <button
                 key={section.id}
+                type="button"
+                onClick={() => setActiveSection(section.id)}
+                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer border border-slate-100 group w-full text-left"
                 role="button"
                 tabIndex={0}
                 onClick={() => setActiveSection(section.id)}
@@ -238,7 +246,7 @@ export default function App() {
                 <h4 className="text-xl font-bold text-royal-900 mb-2 font-serif">{section.title}</h4>
                 <p className="text-slate-600 text-sm leading-relaxed mb-4">{section.shortDesc}</p>
                 <span className="text-xs font-bold text-gold-600 uppercase tracking-widest group-hover:underline">View Details</span>
-              </div>
+              </button>
             ))}
           </div>
         </div>
