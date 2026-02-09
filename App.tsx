@@ -102,6 +102,7 @@ export default function App() {
           <div className="flex gap-2">
             <button 
               onClick={() => setShowAuditLog(true)}
+              aria-label="View Alert Log"
               aria-label="Alert Log"
               className="flex items-center gap-2 px-3 md:px-4 py-2 bg-royal-800 hover:bg-royal-700 rounded-lg transition-colors border border-royal-700 relative"
             >
@@ -123,6 +124,7 @@ export default function App() {
             </button>
             <button 
               onClick={() => setShowGlossary(true)}
+              aria-label="View Glossary"
               aria-label="Glossary"
               className="flex items-center gap-2 px-3 md:px-4 py-2 bg-royal-800 hover:bg-royal-700 rounded-lg transition-colors border border-royal-700"
             >
@@ -286,6 +288,7 @@ export default function App() {
              <div className="flex items-center gap-3">
                <button 
                  onClick={toggleSpeech}
+                 aria-label={isSpeaking ? "Stop reading" : "Start reading"}
                  className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all ${
                    isSpeaking 
                      ? 'bg-red-500 text-white animate-pulse' 
@@ -302,6 +305,7 @@ export default function App() {
                    </>
                  )}
                </button>
+               <button onClick={() => setShowReader(false)} aria-label="Close reader mode" className="p-2 hover:bg-royal-800 rounded-full">
                <button onClick={() => setShowReader(false)} className="p-2 hover:bg-royal-800 rounded-full" aria-label="Close reader">
                <button onClick={() => setShowReader(false)} aria-label="Close reader" className="p-2 hover:bg-royal-800 rounded-full">
                  <X size={24} />
