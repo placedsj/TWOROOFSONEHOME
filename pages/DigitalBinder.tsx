@@ -585,13 +585,7 @@ export default function DigitalBinder() {
            </div>
            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
               {AGREEMENT_PAGES.map((page, idx) => (
-                <button
-                  key={page.id}
-                  type="button"
-                  onClick={() => { setReaderPage(idx); setShowReader(true); }}
-                  className="bg-white p-12 rounded-[3.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 cursor-pointer group flex flex-col justify-between h-[420px] relative overflow-hidden w-full text-left"
-                  aria-label={`Open ${page.title} module`}
-                >
+                <div key={page.id} onClick={() => { setReaderPage(idx); setShowReader(true); }} className="bg-white p-12 rounded-[3.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 cursor-pointer group flex flex-col justify-between h-[420px] relative overflow-hidden">
                    <div className="absolute top-0 right-0 w-48 h-48 bg-royal-50 rounded-full translate-x-12 -translate-y-12 opacity-0 group-hover:opacity-100 transition-all duration-1000 group-hover:translate-x-4 group-hover:-translate-y-4"></div>
                    <div className="relative z-10">
                      <div className="p-6 bg-royal-50 rounded-[2rem] group-hover:bg-royal-900 group-hover:text-white transition-all duration-500 inline-block mb-10 shadow-inner">
@@ -603,7 +597,7 @@ export default function DigitalBinder() {
                    <div className="relative z-10 text-[11px] font-black text-gold-600 tracking-[0.4em] uppercase flex items-center gap-4 mt-6 group-hover:gap-8 transition-all">
                       DEPLOY MODULE <ArrowRight size={20} />
                    </div>
-                </button>
+                </div>
               ))}
            </div>
         </section>

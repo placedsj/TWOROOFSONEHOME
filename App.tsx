@@ -10,19 +10,25 @@ import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import DigitalBinder from "./pages/DigitalBinder";
 
+function Router() {
+  return (
+    <Switch>
+      <Route path="/" component={Home} />
+      <Route path="/login" component={Login} />
+      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/dashboard/:tab" component={Dashboard} />
+      <Route path="/binder" component={DigitalBinder} />
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <Switch>
-          <Route path="/" component={Home} />
-          <Route path="/login" component={Login} />
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/dashboard/:tab" component={Dashboard} />
-          <Route path="/binder" component={DigitalBinder} />
-          <Route component={NotFound} />
-        </Switch>
+        <Router />
       </TooltipProvider>
     </QueryClientProvider>
   );
