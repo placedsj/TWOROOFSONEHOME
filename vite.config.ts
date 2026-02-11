@@ -10,10 +10,9 @@ export default defineConfig(({ mode }) => {
         host: '0.0.0.0',
       },
       plugins: [react()],
-      define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
-      },
+      // Security: Removed insecure exposure of GEMINI_API_KEY via define.
+      // Secrets must not be embedded in client-side code.
+      // Use VITE_ prefix for public variables if needed.
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
