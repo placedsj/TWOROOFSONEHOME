@@ -1,0 +1,1 @@
+## 2024-05-23 - Simulated Async Feedback\n**Learning:** Even for mocked features (like login), replacing `alert()` with a visual loading state significantly improves perceived quality and accessibility, as screen readers can announce status changes.\n**Action:** When prototyping, always implement `isLoading` states for buttons instead of blocking alerts.
