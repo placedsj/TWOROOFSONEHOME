@@ -378,6 +378,7 @@ export default function DigitalBinder() {
     alert(`SYSTEM ALERT TRIGGERED: ${trigger}\nRecipients Notified: ${newAlert.recipients.join(', ')}`);
   }, []);
 
+  const sections: Section[] = useMemo(() => [
   const sections: Section[] = useMemo(() => {
     return [
     {
@@ -759,6 +760,7 @@ export default function DigitalBinder() {
         </div>
       )
     }
+  ], [handleTriggerAlert]);
     ];
   }, [handleTriggerAlert]);
 
