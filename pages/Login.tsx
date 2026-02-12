@@ -1,24 +1,61 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 
 function Login() {
   const [, setLocation] = useLocation();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleLogin = () => {
-    // Simulate a login process
-    alert('Simulating login... Redirecting to dashboard.');
-    setLocation('/dashboard');
+  const validateInput = () => {
+    if (!username.trim()) {
+      setError('Username is required.');
+      return false;
+    }
+    // Basic alphanumeric check for username to prevent potential injection (though client-side)
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      setError('Username can only contain letters, numbers, and underscores.');
+      return false;
+    }
+    if (!password) {
+      setError('Password is required.');
+      return false;
+    }
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long.');
+      return false;
+    }
+    setError('');
+    return true;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validateInput()) {
+      // Simulate a login process
+      // In a real app, this would be an API call
+      setLocation('/dashboard');
+    }
   };
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-8 text-center">
       <div className="bg-white p-10 rounded-xl shadow-lg w-full max-w-sm">
         <h1 className="text-4xl font-serif font-bold text-royal-900 mb-6">Login</h1>
-        <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm text-left">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <input 
               type="text" 
               placeholder="Username" 
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"
             />
           </div>
@@ -26,6 +63,8 @@ function Login() {
             <input 
               type="password" 
               placeholder="Password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"
             />
           </div>
@@ -37,7 +76,7 @@ function Login() {
           </button>
         </form>
         <p className="mt-6 text-sm text-slate-500">
-          This is a placeholder login. Any credentials will "work".
+          This is a placeholder login. Any credentials (min 8 chars) will "work".
         </p>
       </div>
     </div>
