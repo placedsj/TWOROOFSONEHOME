@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
+import { Loader2 } from 'lucide-react';
 
 function Login() {
   const [, setLocation] = useLocation();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateInput = () => {
     if (!username.trim()) {
@@ -32,9 +34,12 @@ function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateInput()) {
+      setIsLoading(true);
       // Simulate a login process
       // In a real app, this would be an API call
-      setLocation('/dashboard');
+      setTimeout(() => {
+        setLocation('/dashboard');
+      }, 1500);
     }
   };
 
@@ -50,29 +55,47 @@ function Login() {
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+          <div className="mb-4 text-left">
+            <label htmlFor="username" className="block text-sm font-medium text-slate-700 mb-1">
+              Username
+            </label>
             <input 
+              id="username"
               type="text" 
               placeholder="Username" 
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"
+              disabled={isLoading}
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500 disabled:opacity-50 disabled:bg-slate-50"
             />
           </div>
-          <div className="mb-6">
+          <div className="mb-6 text-left">
+            <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1">
+              Password
+            </label>
             <input 
+              id="password"
               type="password" 
               placeholder="Password" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"
+              disabled={isLoading}
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500 disabled:opacity-50 disabled:bg-slate-50"
             />
           </div>
           <button 
             type="submit" 
-            className="w-full px-6 py-3 bg-gold-600 text-white font-bold rounded-lg hover:bg-gold-500 transition-colors"
+            disabled={isLoading}
+            className="w-full px-6 py-3 bg-gold-600 text-white font-bold rounded-lg hover:bg-gold-500 transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Log In
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                <span>Logging in...</span>
+              </>
+            ) : (
+              'Log In'
+            )}
           </button>
         </form>
         <p className="mt-6 text-sm text-slate-500">
