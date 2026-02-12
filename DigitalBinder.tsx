@@ -379,6 +379,8 @@ export default function DigitalBinder() {
   }, []);
 
   const sections: Section[] = useMemo(() => [
+  const sections: Section[] = useMemo(() => {
+    return [
     {
       id: 'baseline',
       title: 'The Harper Baseline',
@@ -759,6 +761,8 @@ export default function DigitalBinder() {
       )
     }
   ], [handleTriggerAlert]);
+    ];
+  }, [handleTriggerAlert]);
 
   const activeModalContent = sections.find(s => s.id === activeSection);
 
