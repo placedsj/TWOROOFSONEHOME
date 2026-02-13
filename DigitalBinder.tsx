@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
   Shield, Scale, Users, FileCheck, Heart, Calendar, 
   BookOpen, AlertTriangle, CheckCircle, X, ChevronRight, 
@@ -366,7 +366,7 @@ export default function DigitalBinder() {
     }
   };
 
-  const handleTriggerAlert = (trigger: string) => {
+  const handleTriggerAlert = useCallback((trigger: string) => {
     const newAlert: AlertEntry = {
       id: Math.random().toString(36).substr(2, 9),
       trigger,
@@ -376,9 +376,11 @@ export default function DigitalBinder() {
     };
     setAlerts(prev => [newAlert, ...prev]);
     alert(`SYSTEM ALERT TRIGGERED: ${trigger}\nRecipients Notified: ${newAlert.recipients.join(', ')}`);
-  };
+  }, []);
 
-  const sections: Section[] = [
+  const sections: Section[] = useMemo(() => [
+  const sections: Section[] = useMemo(() => {
+    return [
     {
       id: 'baseline',
       title: 'The Harper Baseline',
@@ -758,7 +760,9 @@ export default function DigitalBinder() {
         </div>
       )
     }
-  ];
+  ], [handleTriggerAlert]);
+    ];
+  }, [handleTriggerAlert]);
 
   const activeModalContent = sections.find(s => s.id === activeSection);
 
