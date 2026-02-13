@@ -1,0 +1,3 @@
+## 2025-02-13 - Performance Strategy: Component Isolation for High-Frequency Updates
+**Learning:** When a parent component (like `DigitalBinder`) contains high-frequency state updates (e.g., a clock updating every second), the entire component tree re-renders on every tick. This can cause performance issues, especially if the parent renders complex children (like `RoadmapTracker` with calculations).
+**Action:** Extract the high-frequency update logic into a small, isolated leaf component (e.g., `LiveClock`). This limits re-renders to just that component, significantly reducing the render load on the parent and siblings.
