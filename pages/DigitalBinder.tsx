@@ -722,6 +722,7 @@ export default function DigitalBinder() {
                 </button>
                 <button 
                    onClick={() => setShowReader(false)} 
+                   aria-label="Close reader mode"
                    className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
                 >
                    <X size={36} />
@@ -779,13 +780,16 @@ export default function DigitalBinder() {
              >
                 <ChevronLeft size={24} className="transition-transform group-hover:-translate-x-2" /> Previous
              </button>
-             <div className="flex gap-6">
+             <div className="flex gap-6" role="group" aria-label="Page navigation">
                {AGREEMENT_PAGES.map((_, i) => (
-                 <div 
+                 <button
                    key={i} 
+                   type="button"
+                   aria-label={`Go to page ${i + 1}`}
+                   aria-current={i === readerPage ? 'page' : undefined}
                    onClick={() => setReaderPage(i)}
                    className={`h-3 rounded-full cursor-pointer transition-all duration-1000 ${i === readerPage ? 'bg-royal-950 w-24 shadow-2xl' : 'bg-slate-200 w-6 hover:bg-slate-300'}`}
-                 ></div>
+                 ></button>
                ))}
              </div>
              <button 
@@ -814,6 +818,7 @@ export default function DigitalBinder() {
               </div>
               <button 
                 onClick={() => setShowGlossary(false)} 
+                aria-label="Close glossary"
                 className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
               >
                 <X size={48} />
