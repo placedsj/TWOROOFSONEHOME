@@ -5,20 +5,6 @@ import { Loader2 } from 'lucide-react';
 function Login() {
   const [, setLocation] = useLocation();
   const [isLoading, setIsLoading] = useState(false);
-
-  const handleLogin = () => {
-    setIsLoading(true);
-    // Simulate a login process
-    setTimeout(() => {
-      setLocation('/dashboard');
-    }, 1500);
-  };
-
-  return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-8 font-sans">
-      <div className="bg-white p-10 rounded-xl shadow-lg w-full max-w-sm text-left">
-        <h1 className="text-4xl font-serif font-bold text-royal-900 mb-6 text-center">Login</h1>
-        <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -48,14 +34,16 @@ function Login() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateInput()) {
+      setIsLoading(true);
       // Simulate a login process
-      // In a real app, this would be an API call
-      setLocation('/dashboard');
+      setTimeout(() => {
+        setLocation('/dashboard');
+      }, 1500);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-8 text-center">
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-8 text-center font-sans">
       <div className="bg-white p-10 rounded-xl shadow-lg w-full max-w-sm">
         <h1 className="text-4xl font-serif font-bold text-royal-900 mb-6">Login</h1>
 
@@ -66,7 +54,7 @@ function Login() {
         )}
 
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+          <div className="mb-4 text-left">
             <label htmlFor="username" className="block text-sm font-bold text-slate-700 mb-2">
               Username
             </label>
@@ -75,14 +63,13 @@ function Login() {
               type="text" 
               required
               placeholder="Username" 
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500 disabled:bg-slate-50 disabled:text-slate-500 transition-all"
               disabled={isLoading}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500 disabled:bg-slate-50 disabled:text-slate-500 transition-all"
             />
           </div>
-          <div className="mb-6">
+          <div className="mb-6 text-left">
             <label htmlFor="password" className="block text-sm font-bold text-slate-700 mb-2">
               Password
             </label>
@@ -91,11 +78,10 @@ function Login() {
               type="password" 
               required
               placeholder="Password" 
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500 disabled:bg-slate-50 disabled:text-slate-500 transition-all"
               disabled={isLoading}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500 disabled:bg-slate-50 disabled:text-slate-500 transition-all"
             />
           </div>
           <button 
@@ -107,8 +93,6 @@ function Login() {
             {isLoading ? 'Logging In...' : 'Log In'}
           </button>
         </form>
-        <p className="mt-6 text-sm text-slate-500 text-center">
-          This is a placeholder login. Any credentials will "work".
         <p className="mt-6 text-sm text-slate-500">
           This is a placeholder login. Any credentials (min 8 chars) will "work".
         </p>
