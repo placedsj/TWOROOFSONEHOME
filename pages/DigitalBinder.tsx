@@ -474,6 +474,25 @@ export default function DigitalBinder() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!showReader) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        setReaderPage(p => Math.max(0, p - 1));
+        document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
+      } else if (e.key === 'ArrowRight') {
+        setReaderPage(p => Math.min(AGREEMENT_PAGES.length - 1, p + 1));
+        document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
+      } else if (e.key === 'Escape') {
+        setShowReader(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showReader]);
+
   const toggleSpeech = () => {
     if (isSpeaking) {
       window.speechSynthesis.cancel();
@@ -775,6 +794,7 @@ export default function DigitalBinder() {
                  document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
                }} 
                disabled={readerPage === 0} 
+               aria-keyshortcuts="ArrowLeft"
                className="flex items-center gap-4 px-16 py-6 rounded-3xl font-black text-xs uppercase tracking-widest border-2 border-slate-100 hover:bg-slate-50 transition-all disabled:opacity-20 active:scale-95 group"
              >
                 <ChevronLeft size={24} className="transition-transform group-hover:-translate-x-2" /> Previous
@@ -794,6 +814,7 @@ export default function DigitalBinder() {
                  document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
                }} 
                disabled={readerPage === AGREEMENT_PAGES.length - 1} 
+               aria-keyshortcuts="ArrowRight"
                className="flex items-center gap-4 px-16 py-6 bg-royal-950 text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-royal-900 transition-all shadow-2xl active:scale-95 group"
              >
                 Continue <ChevronRight size={24} className="transition-transform group-hover:translate-x-2" />
