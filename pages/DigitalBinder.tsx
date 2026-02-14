@@ -1,13 +1,11 @@
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { 
   Shield, Scale, Users, FileCheck, Heart, Calendar, 
   BookOpen, AlertTriangle, CheckCircle, X, ChevronRight, 
   ChevronLeft, Activity, Bell, Siren, Quote, Scroll, 
   Headphones, StopCircle, ArrowRight, Sun,
-  Lock, PenTool, Check, Info, Zap, Download, RefreshCw,
-  Eye, EyeOff, ShieldCheck, Home as HomeIcon, LayoutDashboard,
-  BrainCircuit, Sparkles, MapPin, Fingerprint
+  Lock, PenTool, Check, Info, Zap, RefreshCw,
+  Home as HomeIcon, Sparkles, MapPin, Fingerprint, ShieldCheck
 } from 'lucide-react';
 import { RoadmapTracker } from '../components/RoadmapTracker';
 
@@ -28,6 +26,23 @@ type AgreementPage = {
   sidebar: SidebarItem[];
 };
 
+type Section = {
+  id: string;
+  title: string;
+  icon: React.ReactNode;
+  shortDesc: string;
+  fullContent: React.ReactNode;
+  category: 'foundation' | 'custody' | 'safety' | 'legacy';
+};
+
+type AlertEntry = {
+  id: string;
+  trigger: string;
+  timestamp: string;
+  recipients: string[];
+  link: string;
+};
+
 const GLOSSARY_TERMS = [
   { term: "Harper Baseline", definition: "A verified standard where safety is proven by data (The Exhibit Generator), not by hearsay." },
   { term: "Benchmark of Stability", definition: "Verified sobriety, gambling-free status, and behavioral compliance establishing the father's current standing." },
@@ -36,7 +51,7 @@ const GLOSSARY_TERMS = [
   { term: "Exhibit Generator", definition: "A monthly automated report documenting bio-medical results, meeting logs, and behavioral compliance." },
   { term: "Sunrise Clause", definition: "The target date (March 1, 2028) for automatic transition to 50/50 shared parenting." },
   { term: "Glass House", definition: "The principle of total transparency where privacy is waived for the sake of verification and trust." },
-  { term: "Jubilee Grace", definition: "The waiver of $50,000 in legal costs upon successful completion of the roadmap." },
+  { term: "Jubilee Grace", definition: "The waiver of 0,000 in legal costs upon successful completion of the roadmap." },
 ];
 
 // --- Specialized Interactive Components ---
@@ -452,15 +467,114 @@ const SidebarCard: React.FC<{ item: SidebarItem }> = ({ item }) => {
   );
 };
 
+const Modal = ({ isOpen, onClose, title, children }: { isOpen: boolean; onClose: () => void; title: string; children?: React.ReactNode }) => {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-royal-900/80 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
+        <div className="bg-royal-800 p-6 flex justify-between items-center text-white shrink-0">
+          <h2 className="text-2xl font-serif font-bold">{title}</h2>
+          <button onClick={onClose} className="p-2 hover:bg-royal-700 rounded-full transition-colors">
+            <X size={24} />
+          </button>
+        </div>
+        <div className="p-8 overflow-y-auto leading-relaxed text-slate-700 space-y-4">
+          {children}
+        </div>
+        <div className="p-4 border-t border-slate-100 bg-slate-50 flex justify-end shrink-0">
+          <button onClick={onClose} className="px-6 py-2 bg-royal-800 text-white rounded-lg hover:bg-royal-700 font-medium transition-colors">
+            Close Review
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const StatusCard = ({ label, value, subtext, active }: { label: string; value: string; subtext: string; active?: boolean }) => (
+  <div className={`p-6 rounded-xl border ${active ? 'bg-white border-gold-500 shadow-lg shadow-gold-500/10' : 'bg-slate-50 border-slate-200'} transition-all`}>
+    <div className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-2">{label}</div>
+    <div className="text-3xl font-serif font-bold text-royal-900 mb-1">{value}</div>
+    <div className="text-xs text-slate-400 font-medium">{subtext}</div>
+  </div>
+);
+
+const TimelinePhase = ({ phase, title, time, status, onClick }: { phase: string, title: string, time: string, status: 'completed' | 'current' | 'future', onClick: () => void }) => {
+  const colors = {
+    completed: 'bg-emerald-500 text-white border-emerald-500',
+    current: 'bg-gold-500 text-white border-gold-500 shadow-lg shadow-gold-500/30',
+    future: 'bg-slate-100 text-slate-400 border-slate-200'
+  };
+
+  return (
+    <div
+      onClick={onClick}
+      className={`relative flex-1 p-4 rounded-lg border-2 cursor-pointer transition-all hover:-translate-y-1 ${colors[status]} group`}
+    >
+      <div className="text-xs font-bold uppercase tracking-widest opacity-80 mb-1">{phase}</div>
+      <div className="font-serif font-bold text-lg mb-2">{title}</div>
+      <div className="text-xs font-medium opacity-90">{time}</div>
+      {status === 'current' && (
+        <div className="absolute -top-3 -right-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse">
+          ACTIVE
+        </div>
+      )}
+    </div>
+  );
+};
+
 // --- Main Application Component ---
 
 export default function DigitalBinder() {
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [showGlossary, setShowGlossary] = useState(false);
+  const [showAuditLog, setShowAuditLog] = useState(false);
   const [showReader, setShowReader] = useState(false);
   const [readerPage, setReaderPage] = useState(0);
+  const [alerts, setAlerts] = useState<AlertEntry[]>([]);
+
+  // Audio state
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const synth = window.speechSynthesis;
+
+  // Cleanup audio on unmount or view change
+  useEffect(() => {
+    return () => {
+      synth.cancel();
+      setIsSpeaking(false);
+    };
+  }, []);
+
+  // Stop audio when page changes
+  useEffect(() => {
+    if (isSpeaking) {
+      synth.cancel();
+      setIsSpeaking(false);
+    }
+  }, [readerPage, showReader]);
+
+  const toggleSpeech = () => {
+    if (isSpeaking) {
+      synth.cancel();
+      setIsSpeaking(false);
+    } else {
+      const text = AGREEMENT_PAGES[readerPage].readableText;
+      const utterance = new SpeechSynthesisUtterance(text);
+
+      // Optional: adjust voice settings
+      utterance.rate = 0.9; // Slightly slower for gravity
+      utterance.pitch = 1.0;
+
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
+
+      synth.speak(utterance);
+      setIsSpeaking(true);
+    }
+  };
+
   const [emmaSigned, setEmmaSigned] = useState(false);
   const [craigSigned, setCraigSigned] = useState(false);
-  const [showGlossary, setShowGlossary] = useState(false);
   const [time, setTime] = useState(new Date());
   const [scrolled, setScrolled] = useState(false);
 
@@ -474,338 +588,722 @@ export default function DigitalBinder() {
     };
   }, []);
 
-  const toggleSpeech = () => {
-    if (isSpeaking) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
-    } else {
-      const utterance = new SpeechSynthesisUtterance(AGREEMENT_PAGES[readerPage].readableText);
-      utterance.rate = 0.95;
-      utterance.onend = () => setIsSpeaking(false);
-      window.speechSynthesis.speak(utterance);
-      setIsSpeaking(true);
-    }
-  };
+  const handleTriggerAlert = useCallback((trigger: string) => {
+    const newAlert: AlertEntry = {
+      id: Math.random().toString(36).substr(2, 9),
+      trigger,
+      timestamp: new Date().toLocaleString(),
+      recipients: ["Parenting Coordinator", "Mother's Counsel", "Father's Counsel"],
+      link: "#redline"
+    };
+    setAlerts(prev => [newAlert, ...prev]);
+    alert(`SYSTEM ALERT TRIGGERED: ${trigger}\nRecipients Notified: ${newAlert.recipients.join(', ')}`);
+  }, []);
 
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-gold-200 antialiased">
-      {/* Dynamic Top Bar */}
-      <div className="bg-royal-950 text-royal-200 py-3 px-8 text-[10px] font-black tracking-[0.5em] uppercase flex justify-between items-center shrink-0 border-b border-white/5 z-50">
-        <div className="flex items-center gap-10">
-          <div className="flex items-center gap-3">
-            <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.7)]"></div>
-            DIRECTIVE SYSTEM: ONLINE
+  const sections: Section[] = useMemo(() => {
+    return [
+    {
+      id: 'baseline',
+      title: 'The Harper Baseline',
+      category: 'foundation',
+      icon: <Scale className="w-8 h-8 text-gold-500" />,
+      shortDesc: 'A verified standard where safety is proven by data, not hearsay.',
+      fullContent: (
+        <div className="space-y-6">
+          <div className="bg-slate-50 p-6 rounded-lg border border-slate-200">
+            <h3 className="text-xl font-bold text-royal-900 mb-4">Rejection of Hearsay</h3>
+            <p>This Parenting Agreement rejects the standard adversarial model. Instead, it establishes a verified standard where safety is proven by data ("The Exhibit Generator"), not by hearsay. It prioritizes Harper's right to a stable, sober father and an autonomous mother.</p>
           </div>
-          <div className="hidden lg:flex items-center gap-3 opacity-40 hover:opacity-100 transition-opacity">
-             <Shield size={14} /> THE HARPER BASELINE PROTOCOL
-          </div>
-        </div>
-        <div className="font-mono flex items-center gap-6">
-          <span className="opacity-40">{time.toLocaleDateString()}</span>
-          <span className="text-white font-black">{time.toLocaleTimeString()}</span>
-        </div>
-      </div>
-
-      {/* Modern Sticky Nav */}
-      <header className={`sticky top-0 z-40 transition-all duration-700 ${scrolled ? 'bg-white/80 backdrop-blur-2xl shadow-2xl py-4' : 'bg-white py-12'}`}>
-        <div className="container mx-auto px-8 flex justify-between items-center gap-6">
-          <div className="group cursor-pointer flex items-center gap-6">
-            <div className="p-4 bg-royal-900 text-white rounded-[1.5rem] transition-all duration-500 group-hover:rotate-6 group-hover:scale-110 shadow-xl shadow-royal-900/20">
-              <Shield size={28} />
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="font-bold text-lg mb-2 flex items-center gap-2"><X className="text-red-500" /> What Exists Now</h4>
+              <ul className="list-disc pl-5 space-y-2 text-slate-600">
+                <li>Unverified claims about sobriety</li>
+                <li>Reports filled with hearsay/bias</li>
+                <li>Accusations without evidence</li>
+                <li>Minimized transformation</li>
+              </ul>
             </div>
             <div>
-              <h1 className="text-4xl font-display font-black text-royal-950 tracking-tighter leading-none">
-                Harper Baseline
-              </h1>
-              <p className="text-[11px] text-slate-400 font-black uppercase tracking-[0.4em] mt-2">Directive FDSJ-739-2024</p>
+              <h4 className="font-bold text-lg mb-2 flex items-center gap-2"><CheckCircle className="text-emerald-500" /> What We Create</h4>
+              <ul className="list-disc pl-5 space-y-2 text-slate-600">
+                <li>Objective, measurable safety data</li>
+                <li>A "Glass House" of transparency</li>
+                <li>Evidence-backed claims</li>
+                <li>Empowered decision making</li>
+              </ul>
             </div>
           </div>
-          
-          <div className="flex items-center gap-4">
-            <HeartbeatHeader />
-            <div className="h-10 w-px bg-slate-200 mx-2"></div>
-            <button 
-               onClick={() => setShowGlossary(true)} 
-               className="hidden md:flex px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all items-center gap-3 border border-slate-200 active:scale-95"
+        </div>
+      )
+    },
+    {
+      id: 'custody',
+      title: 'The Roadmap (Custody)',
+      category: 'custody',
+      icon: <Calendar className="w-8 h-8 text-royal-500" />,
+      shortDesc: 'Visual tracking of parenting time phases and compliance progress.',
+      fullContent: (
+        <div className="space-y-8">
+           {/* Header */}
+           <div className="flex items-center justify-between p-4 bg-royal-50 border border-royal-100 rounded-xl">
+             <div>
+               <div className="text-xs font-bold uppercase tracking-widest text-royal-500 mb-1">Current Status</div>
+               <div className="text-text-2xl font-serif font-bold text-royal-900">Phase 1: Foundation</div>
+               <div className="text-sm text-slate-600">Month 1 of 6</div>
+             </div>
+             <div className="h-16 w-16 rounded-full bg-white border-4 border-royal-500 flex items-center justify-center shadow-sm">
+                <span className="font-bold text-royal-900">16%</span>
+             </div>
+           </div>
+
+           <div className="grid md:grid-cols-2 gap-6">
+             {/* Father's Progress */}
+             <div className="border border-slate-200 rounded-xl overflow-hidden">
+                <div className="bg-slate-50 p-4 border-b border-slate-100 flex justify-between items-center">
+                   <h4 className="font-bold text-slate-800">Father's Compliance</h4>
+                   <span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded">VERIFIED</span>
+                </div>
+                <div className="p-6 space-y-6">
+                   <div>
+                      <div className="flex justify-between text-sm mb-2">
+                         <span className="font-medium text-slate-700">Sobriety (Continuous)</span>
+                         <span className="font-bold text-royal-600">100%</span>
+                      </div>
+                      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                         <div className="h-full bg-emerald-500 w-full rounded-full"></div>
+                      </div>
+                   </div>
+                   <div>
+                      <div className="flex justify-between text-sm mb-2">
+                         <span className="font-medium text-slate-700">Gambling-Free</span>
+                         <span className="font-bold text-royal-600">2 Years+</span>
+                      </div>
+                      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                         <div className="h-full bg-emerald-500 w-full rounded-full"></div>
+                      </div>
+                   </div>
+                    <div className="grid grid-cols-2 gap-2 mt-4">
+                       <div className="flex items-center gap-2 text-sm text-slate-600">
+                          <CheckCircle size={16} className="text-emerald-500" /> No Police Contact
+                       </div>
+                       <div className="flex items-center gap-2 text-sm text-slate-600">
+                          <CheckCircle size={16} className="text-emerald-500" /> Gainful Employment
+                       </div>
+                    </div>
+                </div>
+             </div>
+
+             {/* Mother's Progress */}
+              <div className="border border-slate-200 rounded-xl overflow-hidden">
+                <div className="bg-slate-50 p-4 border-b border-slate-100 flex justify-between items-center">
+                   <h4 className="font-bold text-slate-800">Mother's Progress</h4>
+                   <span className="px-2 py-1 bg-gold-100 text-gold-700 text-xs font-bold rounded">IN PROGRESS</span>
+                </div>
+                <div className="p-6 space-y-6">
+                   <div>
+                      <div className="flex justify-between text-sm mb-2">
+                         <span className="font-medium text-slate-700">Jane Block (No Contact)</span>
+                         <span className="font-bold text-gold-600">Month 1/6</span>
+                      </div>
+                      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                         <div className="h-full bg-gold-500 w-[16%] rounded-full relative">
+                            <div className="absolute right-0 top-0 bottom-0 w-1 bg-white/50 animate-pulse"></div>
+                         </div>
+                      </div>
+                   </div>
+                   <div>
+                      <div className="flex justify-between text-sm mb-2">
+                         <span className="font-medium text-slate-700">Autonomy Establishment</span>
+                         <span className="font-bold text-gold-600">Initiated</span>
+                      </div>
+                      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                         <div className="h-full bg-gold-500 w-[25%] rounded-full"></div>
+                      </div>
+                   </div>
+                    <div className="grid grid-cols-2 gap-2 mt-4">
+                       <div className="flex items-center gap-2 text-sm text-slate-600">
+                          <CheckCircle size={16} className="text-gold-500" /> Housing Secure
+                       </div>
+                       <div className="flex items-center gap-2 text-sm text-slate-600">
+                          <div className="h-4 w-4 rounded-full border-2 border-slate-300"></div> Counseling Setup
+                       </div>
+                    </div>
+                </div>
+             </div>
+           </div>
+        </div>
+      )
+    },
+    {
+      id: 'exhibit',
+      title: 'The Exhibit Generator',
+      category: 'safety',
+      icon: <FileCheck className="w-8 h-8 text-royal-500" />,
+      shortDesc: 'Monthly automated reporting on bio-medical, meeting, and behavioral data.',
+      fullContent: (
+        <div className="space-y-6">
+          <p className="italic text-slate-500 border-l-4 border-gold-500 pl-4">"If you have nothing to hide, hiding nothing proves you have nothing to hide."</p>
+
+          <div className="border rounded-xl overflow-hidden">
+            <div className="bg-slate-100 p-4 font-mono text-sm border-b font-bold text-slate-600">SAMPLE REPORT OUTPUT (Monthly by 3rd)</div>
+            <div className="p-6 space-y-4">
+              <div className="flex items-start gap-4">
+                <div className="bg-blue-100 p-2 rounded text-blue-700"><Activity size={20}/></div>
+                <div>
+                  <div className="font-bold text-royal-900">Bio-Medical Verification</div>
+                  <div className="text-sm text-slate-600">13-panel drug/alcohol screen results (Date/Time/Facility).</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="bg-purple-100 p-2 rounded text-purple-700"><Users size={20}/></div>
+                <div>
+                  <div className="font-bold text-royal-900">Meeting Logs</div>
+                  <div className="text-sm text-slate-600">Celebrate Recovery (Weekly), Kings Church (2x/mo), Therapy sessions.</div>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="bg-green-100 p-2 rounded text-green-700"><Shield size={20}/></div>
+                <div>
+                  <div className="font-bold text-royal-900">Behavioral Compliance</div>
+                  <div className="text-sm text-slate-600">No police contact, employment status, housing stability confirmed.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 'autonomy',
+      title: 'The Autonomy Invitation',
+      category: 'foundation',
+      icon: <Heart className="w-8 h-8 text-pink-500" />,
+      shortDesc: 'Acknowledging Mother’s strengths while protecting her from external family pressure.',
+      fullContent: (
+        <div className="space-y-6">
+          <h3 className="text-xl font-bold font-serif text-royal-900">To Emma Ryan</h3>
+          <p>This document is an invitation to the Mother. It acknowledges her strengths and current probationary status, and provides the legal structure she needs to assert Parental Primacy.</p>
+
+          <div className="bg-royal-50 p-6 rounded-xl">
+            <h4 className="font-bold text-royal-800 mb-2">The "Support & Strength" Pledge</h4>
+            <p className="italic text-royal-700 mb-4">"Emma, I know who you really are. You are not the conflict, and you are not the control of others. I am safe. I am sober. And I am here to help you be the woman I know you can be."</p>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+               <div className="bg-white p-3 rounded shadow-sm">
+                 <span className="font-bold block text-royal-900">Emergency Support</span>
+                 Emma calls Craig first, not her parents.
+               </div>
+               <div className="bg-white p-3 rounded shadow-sm">
+                 <span className="font-bold block text-royal-900">Consultation</span>
+                 Craig is available for support, not control.
+               </div>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 'circle',
+      title: 'The Circle of Two',
+      category: 'custody',
+      icon: <Users className="w-8 h-8 text-royal-500" />,
+      shortDesc: 'Decisions are made by Mom and Dad. Not by extended family.',
+      fullContent: (
+        <div className="space-y-6">
+           <div className="flex items-center justify-center p-8 bg-slate-50 rounded-xl">
+              <div className="relative w-80 h-80"> {/* Increased size for better visual impact */}
+                {/* Outermost Ring: Excluded Zone (static, dashed, red) */}
+                <div className="absolute inset-[-60px] border-4 border-dashed border-red-300 rounded-full flex items-center justify-center opacity-60 animate-spin-slow">
+                   <span className="absolute -top-10 text-sm font-bold text-red-600 uppercase tracking-wide px-4 py-1 rounded-full bg-red-50/70 backdrop-blur-sm">The Excluded Zone</span>
+                </div>
+
+                {/* Middle Ring: Mom & Dad Unified (static, solid, gold, protective) */}
+                <div className="absolute inset-[-20px] border-4 border-gold-500 rounded-full flex items-center justify-center z-0 shadow-lg shadow-gold-500/20">
+                   {/* Visual separation with labels */}
+                   <div className="absolute w-full h-full flex flex-col justify-center items-center">
+                     <span className="absolute top-[calc(50%-40px)] left-1/2 -translate-x-1/2 -translate-y-full text-gold-900 font-bold text-sm bg-gold-100/70 px-2 py-1 rounded-full whitespace-nowrap">Mother's Sole Authority</span>
+                     <span className="absolute bottom-[calc(50%-40px)] left-1/2 -translate-x-1/2 translate-y-full text-gold-900 font-bold text-sm bg-gold-100/70 px-2 py-1 rounded-full whitespace-nowrap">Father's Joint Responsibility</span>
+                   </div>
+                   <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white bg-gold-600 px-4 py-2 rounded-full font-bold text-lg whitespace-nowrap">Mom & Dad Unified</span>
+                </div>
+
+                {/* Inner Circle: HARPER Protected Core */}
+                <div className="absolute inset-0 border-4 border-royal-900 rounded-full flex items-center justify-center z-10 bg-white">
+                  <div className="text-center">
+                    <div className="font-bold text-3xl text-royal-900">HARPER</div>
+                    <div className="text-sm text-slate-500">Protected Core</div>
+                  </div>
+                </div>
+              </div>
+           </div>
+
+           <div className="grid md:grid-cols-2 gap-6">
+             <div className="border border-red-200 bg-red-50 p-4 rounded-lg group hover:border-red-400 transition-colors"> {/* Added group and hover effect */}
+               <h4 className="font-bold text-red-800 mb-4 flex items-center gap-2">
+                 <X size={20} /> Excluded
+                 <span className="relative cursor-help ml-1"> {/* This span triggers the Info tooltip */}
+                   <span className="font-bold text-red-600">Zero Vote</span>
+                   <Info size={14} className="inline-block ml-1 text-red-400 group-hover:text-red-600 transition-colors" /> {/* Emphasize Info icon on group hover */}
+                   <div className="absolute hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 p-3 bg-red-700 text-white text-xs rounded-lg shadow-lg whitespace-normal w-64 text-center z-20">
+                     No decision-making power on Harper's medical care, schooling, daily routine, or extracurricular activities.
+                   </div>
+                 </span>
+               </h4>
+
+               <div className="space-y-3">
+                 <div className="flex items-start gap-3 p-2 bg-white/60 rounded border border-red-100 group-hover:border-red-300 transition-colors">
+                   <div className="bg-red-100 p-1 rounded text-red-600 mt-0.5"><Users size={14} /></div>
+                   <div>
+                     <span className="font-bold text-red-900 text-sm block">Grandparents</span>
+                     <span className="text-xs text-red-700">Love without authority. Not decision-makers.</span>
+                   </div>
+                 </div>
+
+                 <div className="flex items-start gap-3 p-2 bg-white/60 rounded border border-red-100 group-hover:border-red-300 transition-colors">
+                    <div className="bg-red-100 p-1 rounded text-red-600 mt-0.5"><Users size={14} /></div>
+                   <div>
+                     <span className="font-bold text-red-900 text-sm block">Aunts & Uncles</span>
+                     <span className="text-xs text-red-700">Support without interference. Opinions are welcome only when asked.</span>
+                   </div>
+                 </div>
+
+                 <div className="flex items-start gap-3 p-2 bg-white/60 rounded border border-red-100 group-hover:border-red-300 transition-colors">
+                    <div className="bg-red-100 p-1 rounded text-red-600 mt-0.5"><Users size={14} /></div>
+                   <div>
+                     <span className="font-bold text-red-900 text-sm block">Extended Kin</span>
+                     <span className="text-xs text-red-700">Guests in Harper's life, not architects of it.</span>
+                   </div>
+                 </div>
+               </div>
+             </div>
+             <div className="border border-royal-200 bg-royal-50 p-4 rounded-lg">
+               <h4 className="font-bold text-royal-800 mb-3">The "Jane Block"</h4>
+               <p className="text-sm text-royal-700 mb-4">A mandatory 6-month cooling-off period where the maternal grandmother has zero contact. Designed to allow Emma to establish her independent parenting identity and autonomy.</p>
+
+               <div className="flex justify-between text-sm mb-2">
+                  <span className="font-medium text-slate-700">Progress</span>
+                  <span className="font-bold text-gold-600">Month 1/6</span>
+               </div>
+               <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-gold-500 w-[16.6%] rounded-full relative">
+                     <div className="absolute right-0 top-0 bottom-0 w-1 bg-white/50 animate-pulse"></div>
+                  </div>
+               </div>
+             </div>
+           </div>
+        </div>
+      )
+    },
+    {
+      id: 'redline',
+      title: 'Red Line Protocols',
+      category: 'safety',
+      icon: <AlertTriangle className="w-8 h-8 text-red-500" />,
+      shortDesc: 'Immediate suspension triggers for substance use or violence.',
+      fullContent: (
+        <div className="space-y-6">
+          <h3 className="text-xl font-bold text-red-700 border-b border-red-200 pb-2">Non-Negotiable Safety Triggers</h3>
+          <div className="space-y-4">
+             <div className="flex items-start gap-3">
+               <div className="min-w-[4px] h-full bg-red-500 rounded-full"></div>
+               <div>
+                 <div className="font-bold text-slate-900">Positive Substance Screen</div>
+                 <p className="text-slate-600 text-sm">Any drug or non-prescribed alcohol. Automatic 48-hour suspension pending investigation.</p>
+               </div>
+             </div>
+             <div className="flex items-start gap-3">
+               <div className="min-w-[4px] h-full bg-red-500 rounded-full"></div>
+               <div>
+                 <div className="font-bold text-slate-900">Police Contact (Violence)</div>
+                 <p className="text-slate-600 text-sm">Any verified police contact involving violence, weapons, or threats triggers immediate suspension.</p>
+               </div>
+             </div>
+             <div className="flex items-start gap-3">
+               <div className="min-w-[4px] h-full bg-red-500 rounded-full"></div>
+               <div>
+                 <div className="font-bold text-slate-900">Child Endangerment</div>
+                 <p className="text-slate-600 text-sm">Automatic permanent suspension pending legal clearance.</p>
+               </div>
+             </div>
+          </div>
+
+          <div className="mt-8 p-6 bg-red-50 border border-red-200 rounded-xl">
+            <h4 className="font-bold text-red-900 mb-4 flex items-center gap-2">
+                <Siren className="w-5 h-5 animate-pulse" />
+                System Simulation: Trigger Event
+            </h4>
+            <div className="grid gap-3 md:grid-cols-2">
+                <button 
+                    onClick={() => handleTriggerAlert('Positive Substance Screen')}
+                    className="p-3 bg-white border border-red-300 text-red-700 rounded-lg hover:bg-red-600 hover:text-white transition-all font-medium text-sm text-left flex items-center justify-between group"
+                >
+                    <span>Simulate Positive Screen</span>
+                    <AlertTriangle size={16} className="opacity-50 group-hover:opacity-100" />
+                </button>
+                <button 
+                    onClick={() => handleTriggerAlert('Police Contact (Verified)')}
+                    className="p-3 bg-white border border-red-300 text-red-700 rounded-lg hover:bg-red-600 hover:text-white transition-all font-medium text-sm text-left flex items-center justify-between group"
+                >
+                    <span>Simulate Police Contact</span>
+                    <AlertTriangle size={16} className="opacity-50 group-hover:opacity-100" />
+                </button>
+            </div>
+            <p className="text-xs text-red-500 mt-3">* Clicking these will generate an audit log entry and simulate notification dispatch to designated parties.</p>
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 'legacy',
+      title: 'Sunrise & Legacy',
+      category: 'legacy',
+      icon: <Sun className="w-8 h-8 text-gold-500" />,
+      shortDesc: 'The path to March 1, 2028: Cost elimination and full freedom.',
+      fullContent: (
+        <div className="space-y-6">
+          <div className="text-center p-6 bg-gradient-to-br from-royal-900 to-royal-800 text-white rounded-xl">
+             <Sun className="w-16 h-16 mx-auto text-gold-500 mb-4" />
+             <h2 className="text-3xl font-serif font-bold mb-2">March 1, 2028</h2>
+             <div className="text-gold-400 font-bold tracking-widest uppercase mb-4">The Sunrise Clause</div>
+             <p className="text-royal-100 max-w-lg mx-auto">"We made it. Welcome home, Mom."</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+             <div className="p-4 border border-gold-200 bg-gold-50 rounded-lg">
+               <h4 className="font-bold text-gold-800 mb-2">The Jubilee Grace</h4>
+               <p className="text-sm text-slate-700">Father waives 0,000 in accumulated legal costs. All monitoring costs cease.</p>
+             </div>
+             <div className="p-4 border border-slate-200 bg-white rounded-lg">
+               <h4 className="font-bold text-slate-800 mb-2">Automatic Transition</h4>
+               <p className="text-sm text-slate-700">If criteria met: 50/50 Shared Parenting, Joint Custody, Elimination of all special conditions.</p>
+             </div>
+          </div>
+        </div>
+      )
+    }
+  ];
+  }, [handleTriggerAlert]);
+
+  const activeModalContent = sections.find(s => s.id === activeSection);
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans pb-20">
+
+      {/* Header */}
+      <header className="bg-royal-900 text-white py-6 sticky top-0 z-40 shadow-xl">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-serif font-bold text-white tracking-wide">The Harper Baseline</h1>
+            <div className="text-xs md:text-sm text-royal-100 opacity-70 font-mono">CASE: FDSJ-739-2024 • QUISPAMSIS, NB</div>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowAuditLog(true)}
+              className="flex items-center gap-2 px-3 md:px-4 py-2 bg-royal-800 hover:bg-royal-700 rounded-lg transition-colors border border-royal-700 relative"
             >
-              <BookOpen size={18} /> Lexicon
+              <Bell size={18} />
+              <span className="hidden md:inline">Alert Log</span>
+              {alerts.length > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold">
+                  {alerts.length}
+                </span>
+              )}
             </button>
-            <button 
-               onClick={() => setShowReader(true)} 
-               className="px-8 py-4 bg-royal-950 hover:bg-royal-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-royal-900/20 flex items-center gap-3 active:scale-95 transition-all"
+            <button
+              onClick={() => setShowReader(true)}
+              className="flex items-center gap-2 px-3 md:px-4 py-2 bg-gold-600 hover:bg-gold-500 rounded-lg transition-colors text-white font-medium border border-gold-500 shadow-lg shadow-gold-500/20"
             >
-              <Scroll size={22} /> <span className="hidden sm:inline">Open Directive</span>
+              <Scroll size={18} />
+              <span className="hidden md:inline">Read Agreement</span>
+            </button>
+            <button
+              onClick={() => setShowGlossary(true)}
+              className="flex items-center gap-2 px-3 md:px-4 py-2 bg-royal-800 hover:bg-royal-700 rounded-lg transition-colors border border-royal-700"
+            >
+              <BookOpen size={18} />
+              <span className="hidden md:inline">Glossary</span>
             </button>
           </div>
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto px-8 py-20 space-y-32">
-        {/* Immersive Hero */}
-        <section className="max-w-6xl mx-auto text-center space-y-12 animate-in fade-in slide-in-from-top-12 duration-1000">
-           <div className="flex justify-center gap-6 mb-8">
-              <StatusBadge label="Directives Active" active />
-              <StatusBadge label="Monitoring Guard" active />
-           </div>
-           <h2 className="text-7xl md:text-9xl font-serif font-black text-royal-950 leading-[0.95] tracking-tighter">
-             "Only the <span className="text-gold-500 italic relative inline-block">truth. <div className="absolute -bottom-2 left-0 w-full h-2 bg-gold-200 -z-10 rotate-[-1deg]"></div></span> What <span className="underline decoration-gold-400 underline-offset-12 decoration-8">God would do.</span>"
-           </h2>
-           <p className="text-3xl text-slate-400 font-serif italic max-w-4xl mx-auto leading-relaxed">
-             A transition from facing off to standing <span className="text-royal-900 font-black not-italic border-b-4 border-gold-500/30">Back-to-Back</span> to protect the child born 11-12-2024.
-           </p>
-        </section>
+      {/* Hero / Dashboard Top */}
+      <div className="bg-white border-b border-slate-200">
+        <div className="container mx-auto px-4 py-12">
+          <div className="grid lg:grid-cols-3 gap-8 items-center">
+            <div className="lg:col-span-2 space-y-6">
+               <div className="inline-block px-3 py-1 bg-gold-100 text-gold-700 rounded-full text-xs font-bold tracking-widest uppercase mb-2">
+                 Active Status: Verified
+               </div>
+               <h2 className="text-4xl md:text-5xl font-serif font-bold text-royal-900 leading-tight">
+                 "Only the truth. What God would do. In Harper's best interest."
+               </h2>
+               <p className="text-lg text-slate-600 max-w-2xl leading-relaxed">
+                 A transition from facing off to standing <span className="font-bold text-royal-800">Back-to-Back</span>.
+                 This dashboard monitors the "Glass House" verification system protecting Harper June Elizabeth Ryan-Schulz.
+               </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+               <StatusCard
+                  label="Verification Status"
+                  value="Active Monitoring"
+                  subtext="Subject to Exhibit Generator Review"
+                  active={true}
+                />
+               <StatusCard
+                  label="Mother's Status"
+                  value="Phase 1"
+                  subtext="Foundation & Shared Parenting"
+                />
+            </div>
+          </div>
+        </div>
+      </div>
 
-        {/* Modular Grid System */}
-        <section className="grid lg:grid-cols-12 gap-10">
-           <div className="lg:col-span-8 bg-white p-16 rounded-[4rem] shadow-2xl shadow-royal-950/5 border border-slate-100/50 animate-in fade-in zoom-in duration-1000 delay-200">
-              <RoadmapTracker />
-           </div>
-           <div className="lg:col-span-4 space-y-10 animate-in fade-in slide-in-from-right-12 duration-1000 delay-400">
-              <InteractiveExhibit />
-              <div className="bg-gradient-to-br from-pink-500 to-pink-600 p-12 rounded-[3.5rem] text-white shadow-2xl flex flex-col justify-between h-[340px] group overflow-hidden relative shadow-pink-500/20 hover:shadow-pink-500/40 transition-all duration-700">
-                 <Heart size={200} className="absolute -bottom-16 -right-16 opacity-10 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-1000" />
-                 <div className="relative z-10">
-                    <h4 className="text-[11px] font-black uppercase tracking-[0.4em] mb-6 opacity-70">Sovereignty Shield</h4>
-                    <p className="text-4xl font-serif font-black leading-tight tracking-tight">Protected Autonomy for Emma Ryan</p>
-                 </div>
-                 <div className="relative z-10 flex items-center gap-3 text-[10px] font-black uppercase tracking-widest mt-8 bg-white/10 w-fit px-6 py-3 rounded-full backdrop-blur-xl border border-white/20">
-                   <Shield size={16} /> Directive Active
-                 </div>
-              </div>
-           </div>
-        </section>
+      {/* Timeline Section */}
+      <div className="container mx-auto px-4 py-12">
+        <div className="flex items-center justify-between mb-8">
+          <h3 className="text-2xl font-serif font-bold text-royal-900">The Roadmap to Sunrise</h3>
+          <span className="text-sm font-medium text-slate-500">Current Phase: Foundation</span>
+        </div>
 
-        {/* Modules Slider Title */}
-        <section className="space-y-12">
-           <div className="flex items-end justify-between border-b border-slate-200 pb-10">
-              <div>
-                 <h3 className="text-xs font-black text-gold-600 uppercase tracking-[0.6em] mb-4">Agreement Modules</h3>
-                 <h2 className="text-6xl font-serif font-black text-royal-950 tracking-tighter">The Directive Core</h2>
-              </div>
-           </div>
-           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {AGREEMENT_PAGES.map((page, idx) => (
-                <div key={page.id} onClick={() => { setReaderPage(idx); setShowReader(true); }} className="bg-white p-12 rounded-[3.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-4 transition-all duration-500 cursor-pointer group flex flex-col justify-between h-[420px] relative overflow-hidden">
-                   <div className="absolute top-0 right-0 w-48 h-48 bg-royal-50 rounded-full translate-x-12 -translate-y-12 opacity-0 group-hover:opacity-100 transition-all duration-1000 group-hover:translate-x-4 group-hover:-translate-y-4"></div>
-                   <div className="relative z-10">
-                     <div className="p-6 bg-royal-50 rounded-[2rem] group-hover:bg-royal-900 group-hover:text-white transition-all duration-500 inline-block mb-10 shadow-inner">
-                        <FileCheck size={36} />
-                     </div>
-                     <h4 className="text-3xl font-serif font-black text-royal-950 mb-6 leading-none group-hover:text-royal-900 transition-colors tracking-tighter">{page.title}</h4>
-                     <p className="text-sm text-slate-400 font-bold leading-relaxed opacity-60">Verified Directive regarding the protocol for {page.id}.</p>
-                   </div>
-                   <div className="relative z-10 text-[11px] font-black text-gold-600 tracking-[0.4em] uppercase flex items-center gap-4 mt-6 group-hover:gap-8 transition-all">
-                      DEPLOY MODULE <ArrowRight size={20} />
-                   </div>
-                </div>
-              ))}
-           </div>
-        </section>
+        <div className="flex flex-col md:flex-row gap-4 relative">
+          {/* Connector Line (Desktop) */}
+          <div className="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-slate-200 -z-10 transform -translate-y-1/2"></div>
 
-        {/* Shared Signature Oath */}
-        <section className="py-32 border-y-2 border-slate-100 text-center space-y-20 bg-white rounded-[6rem] shadow-2xl relative overflow-hidden shadow-royal-950/5">
-           <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-royal-950 via-gold-500 to-royal-950 opacity-10"></div>
-           <div className="max-w-4xl mx-auto px-8">
-              <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.8em] mb-8">The Unified Oath of Baseline</h3>
-              <h2 className="text-6xl font-serif font-black text-royal-950 leading-[1.05] tracking-tighter">"This document is the <span className="text-gold-500 italic">architecture of unity</span>. We stand as the final authority."</h2>
-           </div>
+          <TimelinePhase
+            phase="Phase 1"
+            title="Foundation"
+            time="Months 1-6"
+            status="current"
+            onClick={() => setActiveSection('custody')}
+          />
+           <TimelinePhase
+            phase="Phase 2"
+            title="Expansion"
+            time="Months 7-24"
+            status="future"
+            onClick={() => setActiveSection('custody')}
+          />
+           <TimelinePhase
+            phase="Phase 3"
+            title="Near-Equal"
+            time="Month 25+"
+            status="future"
+            onClick={() => setActiveSection('custody')}
+          />
+           <TimelinePhase
+            phase="Destination"
+            title="Sunrise Clause"
+            time="March 1, 2028"
+            status="future"
+            onClick={() => setActiveSection('legacy')}
+          />
+        </div>
+      </div>
 
-           <div className="flex flex-col xl:flex-row items-center justify-center gap-24 px-12">
-              <div className="space-y-6">
-                 <button 
-                   onClick={() => setEmmaSigned(!emmaSigned)}
-                   className={`w-96 h-48 rounded-[3rem] border-4 transition-all duration-1000 flex flex-col items-center justify-center gap-4 overflow-hidden relative group ${emmaSigned ? 'bg-emerald-50 border-emerald-500 shadow-[0_40px_80px_rgba(16,185,129,0.2)]' : 'bg-white border-slate-100 hover:border-pink-300 hover:shadow-2xl'}`}
-                 >
-                   {emmaSigned ? (
-                     <>
-                       <div className="absolute top-0 right-0 p-6 opacity-5"><Check size={120}/></div>
-                       <PenTool size={28} className="text-emerald-500 mb-2" />
-                       <span className="font-serif italic text-royal-950 text-4xl font-black">Emma Elizabeth Ryan</span>
-                       <span className="text-[10px] font-black text-emerald-600 tracking-[0.4em] uppercase">Identity Authenticated</span>
-                     </>
-                   ) : (
-                     <div className="flex flex-col items-center gap-5">
-                        <div className="p-5 bg-slate-50 rounded-[2rem] group-hover:bg-pink-50 transition-colors">
-                           <Lock size={32} className="text-slate-300 group-hover:text-pink-400" />
-                        </div>
-                        <span className="text-[11px] font-black text-slate-400 tracking-[0.5em]">ATTEST AS MOTHER</span>
-                     </div>
-                   )}
-                 </button>
-              </div>
-
-              <div className="hidden xl:flex flex-col items-center gap-4">
-                 <div className="h-24 w-1 bg-slate-100"></div>
-                 <Heart size={32} className={`transition-all duration-1000 ${emmaSigned && craigSigned ? 'text-pink-500 scale-150 animate-pulse' : 'text-slate-100'}`} />
-                 <div className="h-24 w-1 bg-slate-100"></div>
-              </div>
-
-              <div className="space-y-6">
-                 <button 
-                   onClick={() => setCraigSigned(!craigSigned)}
-                   className={`w-96 h-48 rounded-[3rem] border-4 transition-all duration-1000 flex flex-col items-center justify-center gap-4 overflow-hidden relative group ${craigSigned ? 'bg-emerald-50 border-emerald-500 shadow-[0_40px_80px_rgba(16,185,129,0.2)]' : 'bg-white border-slate-100 hover:border-royal-300 hover:shadow-2xl'}`}
-                 >
-                   {craigSigned ? (
-                     <>
-                       <div className="absolute top-0 right-0 p-6 opacity-5"><Check size={120}/></div>
-                       <PenTool size={28} className="text-emerald-500 mb-2" />
-                       <span className="font-serif italic text-royal-950 text-4xl font-black">Craig Alexander Schulz</span>
-                       <span className="text-[10px] font-black text-emerald-600 tracking-[0.4em] uppercase">Identity Authenticated</span>
-                     </>
-                   ) : (
-                     <div className="flex flex-col items-center gap-5">
-                        <div className="p-5 bg-slate-50 rounded-[2rem] group-hover:bg-royal-50 transition-colors">
-                           <Lock size={32} className="text-slate-300 group-hover:text-royal-400" />
-                        </div>
-                        <span className="text-[11px] font-black text-slate-400 tracking-[0.5em]">ATTEST AS FATHER</span>
-                     </div>
-                   )}
-                 </button>
-              </div>
-           </div>
-
-           {emmaSigned && craigSigned && (
-             <div className="text-emerald-600 font-black text-4xl animate-in zoom-in fade-in duration-1000 flex items-center justify-center gap-8 bg-emerald-50 py-12 border-y-2 border-emerald-100 tracking-tighter shadow-inner">
-                <ShieldCheck size={54} /> DIRECTIVE PROTOCOL SEALED • CASE CONCLUDED
-             </div>
-           )}
-        </section>
-      </main>
-
-      {/* Footer Branding */}
-      <footer className="bg-royal-950 py-40 text-center relative overflow-hidden">
-         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-         <div className="container mx-auto px-8 space-y-16">
-           <div className="flex flex-col items-center gap-10">
-              <div className="p-10 bg-white/5 rounded-[4rem] border border-white/5 backdrop-blur-2xl shadow-inner group">
-                 <Heart className="text-pink-500 animate-pulse group-hover:scale-125 transition-transform duration-700" size={80} />
-              </div>
-              <div className="space-y-6">
-                 <p className="text-white text-sm font-black uppercase tracking-[0.8em]">Two Roofs • One Heart • One Blueprint</p>
-                 <div className="flex flex-wrap items-center justify-center gap-12 text-[11px] font-black text-royal-500 tracking-[0.4em]">
-                    <span className="flex items-center gap-3"><Check size={16}/> RADICAL TRUTH</span>
-                    <span className="flex items-center gap-3"><Check size={16}/> BEST INTEREST</span>
-                    <span className="flex items-center gap-3"><Check size={16}/> DIVINE ORDER</span>
-                 </div>
-              </div>
-           </div>
-           <div className="pt-20 border-t border-white/5 max-w-2xl mx-auto">
-              <p className="text-royal-600 text-[10px] font-mono leading-loose uppercase tracking-widest opacity-60">
-                 INTERNAL DIRECTIVE • NB CASE FDSJ-739-2024 • QUISPAMSIS JURISDICTION • UNAUTHORIZED MODIFICATION TRIGGERS AUTOMATIC AUDIT RECORD.
-              </p>
-           </div>
-         </div>
-      </footer>
-
-      {/* Reader Mode Layout */}
-      {showReader && (
-        <div className="fixed inset-0 z-[60] flex flex-col bg-white animate-in fade-in slide-in-from-bottom-24 duration-1000">
-          <nav className="bg-royal-950 text-white px-12 py-8 flex justify-between items-center shadow-2xl relative overflow-hidden">
-             <div className="absolute inset-0 bg-gradient-to-r from-royal-900 to-transparent opacity-50"></div>
-             <div className="flex items-center gap-10 relative z-10">
-                <div className="p-6 bg-royal-800 rounded-[2rem] shadow-inner border border-white/5"><Scroll size={48} className="text-gold-400" /></div>
-                <div>
-                   <h2 className="font-serif font-black text-4xl tracking-tighter">Parenting Directive</h2>
-                   <div className="flex items-center gap-4 mt-2">
-                      <span className="text-[11px] font-black text-royal-400 uppercase tracking-[0.4em]">Module {readerPage + 1} // Primary</span>
-                      <div className="h-1.5 w-1.5 bg-royal-700 rounded-full"></div>
-                      <span className="text-[11px] font-mono text-royal-500 uppercase tracking-widest">Protocol: FDSJ-739</span>
-                   </div>
-                </div>
-             </div>
-             <div className="flex gap-6 relative z-10">
-                <button 
-                   onClick={toggleSpeech} 
-                   className={`flex items-center gap-4 px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 ${isSpeaking ? 'bg-red-500 animate-pulse shadow-[0_0_40px_rgba(239,68,68,0.4)]' : 'bg-royal-800 hover:bg-royal-700 border border-white/10'}`}
-                >
-                   {isSpeaking ? <><StopCircle size={24}/> Deactivate</> : <><Headphones size={24}/> Voice Feed</>}
-                </button>
-                <button 
-                   onClick={() => setShowReader(false)} 
-                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
-                >
-                   <X size={36} />
-                </button>
-             </div>
-          </nav>
-
-          <div className="flex-1 overflow-hidden flex flex-col lg:flex-row">
-             <div className="flex-1 overflow-y-auto p-16 lg:p-32 bg-white shadow-inner custom-scrollbar scroll-smooth">
-                <div className="max-w-5xl mx-auto space-y-24 animate-in fade-in slide-in-from-bottom-12 duration-1000">
-                   <div className="border-b border-slate-100 pb-16 flex justify-between items-end">
-                      <div className="space-y-4">
-                         <span className="text-[11px] font-black text-gold-500 uppercase tracking-[0.6em]">System Architecture</span>
-                         <h2 className="text-8xl font-serif font-black text-royal-950 tracking-tighter leading-none">{AGREEMENT_PAGES[readerPage].title}</h2>
-                      </div>
-                      <div className="hidden sm:block text-right pb-2">
-                         <div className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] mb-2">Internal Clearance</div>
-                         <div className="text-emerald-500 text-xs font-black uppercase tracking-widest bg-emerald-50 px-4 py-2 rounded-xl">Deployment Ready</div>
-                      </div>
-                   </div>
-                   <div className="text-slate-700 font-medium text-2xl leading-relaxed">
-                      {AGREEMENT_PAGES[readerPage].content}
-                   </div>
-                   
-                   <div className="pt-32 opacity-10 hover:opacity-50 transition-opacity duration-1000">
-                      <div className="h-[2px] w-full bg-slate-200"></div>
-                      <div className="flex justify-between py-10 font-mono text-[10px] uppercase tracking-widest font-black">
-                         <span>SECURE HASH: 0x{Math.random().toString(16).substr(2, 16).toUpperCase()}</span>
-                         <span>PAGE AUTHENTICATION {readerPage + 1} of {AGREEMENT_PAGES.length}</span>
-                      </div>
-                   </div>
-                </div>
-             </div>
-             
-             <aside className="w-full lg:w-[600px] bg-slate-50 border-l border-slate-100 p-16 overflow-y-auto space-y-12 shadow-[-40px_0_80px_rgba(0,0,0,0.03)] z-10 custom-scrollbar">
-                <div className="flex items-center gap-4 mb-16">
-                   <div className="h-3 w-3 bg-gold-500 rounded-full shadow-[0_0_10px_rgba(245,158,11,0.5)]"></div>
-                   <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.5em]">Contextual Analysis</h3>
-                </div>
-                {AGREEMENT_PAGES[readerPage].sidebar.map((item, idx) => (
-                  <SidebarCard key={idx} item={item} />
-                ))}
-             </aside>
+      {/* Main Content Grid */}
+      <div className="bg-slate-100 py-16">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-2 mb-8">
+             <div className="h-8 w-1 bg-gold-500 rounded-full"></div>
+             <h3 className="text-2xl font-serif font-bold text-royal-900">Core Agreement Modules</h3>
           </div>
 
-          {/* Reader Control Dock */}
-          <div className="bg-white border-t border-slate-100 p-10 flex justify-between items-center px-24 shadow-[0_-20px_60px_rgba(0,0,0,0.05)] relative z-20">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sections.map((section) => (
+              <div
+                key={section.id}
+                onClick={() => setActiveSection(section.id)}
+                className="bg-white p-6 rounded-xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all cursor-pointer border border-slate-100 group"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div className="p-3 bg-slate-50 rounded-lg group-hover:bg-royal-50 transition-colors">
+                    {section.icon}
+                  </div>
+                  <ChevronRight className="text-slate-300 group-hover:text-gold-500 transition-colors" />
+                </div>
+                <h4 className="text-xl font-bold text-royal-900 mb-2 font-serif">{section.title}</h4>
+                <p className="text-slate-600 text-sm leading-relaxed mb-4">{section.shortDesc}</p>
+                <span className="text-xs font-bold text-gold-600 uppercase tracking-widest group-hover:underline">View Details</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Footer / Signatures Visual */}
+      <div className="container mx-auto px-4 py-16 text-center">
+        <div className="max-w-2xl mx-auto space-y-8">
+           <Heart className="w-12 h-12 text-royal-900 mx-auto opacity-20" />
+           <p className="text-slate-500 italic font-serif text-lg">
+             "We, the parents, haven't been told 'No' when we stand together. This document is the architecture of that unity."
+           </p>
+           <div className="flex justify-center gap-8 pt-8 border-t border-slate-200">
+              <div className="text-left">
+                <div className="h-px w-32 bg-slate-900 mb-2"></div>
+                <div className="text-xs uppercase font-bold text-slate-400">Emma Elizabeth Ryan</div>
+              </div>
+              <div className="text-left">
+                <div className="h-px w-32 bg-slate-900 mb-2"></div>
+                <div className="text-xs uppercase font-bold text-slate-400">Craig Alexander Paul Schulz</div>
+              </div>
+           </div>
+        </div>
+      </div>
+
+      {/* Details Modal */}
+      <Modal
+        isOpen={!!activeSection}
+        onClose={() => setActiveSection(null)}
+        title={activeModalContent?.title || ''}
+      >
+        {activeModalContent?.fullContent}
+      </Modal>
+
+      {/* Full Agreement Reader Mode */}
+      {showReader && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-slate-100">
+          <div className="bg-royal-900 text-white p-4 shadow-lg flex justify-between items-center shrink-0">
+             <div className="flex items-center gap-3">
+               <div className="p-2 bg-royal-800 rounded-lg"><Scroll size={20}/></div>
+               <div>
+                 <h2 className="font-serif font-bold text-lg">Full Agreement Reader</h2>
+                 <div className="text-xs text-royal-300">Page {readerPage + 1} of {AGREEMENT_PAGES.length}</div>
+               </div>
+             </div>
+             
+             <div className="flex items-center gap-3">
+               <button
+                 onClick={toggleSpeech}
+                 className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all ${
+                   isSpeaking
+                     ? 'bg-red-500 text-white animate-pulse'
+                     : 'bg-royal-800 border border-royal-700 hover:bg-royal-700'
+                 }`}
+               >
+                 {isSpeaking ? (
+                   <>
+                     <StopCircle size={18} /> Stop
+                   </>
+                 ) : (
+                   <>
+                     <Headphones size={18} /> Listen
+                   </>
+                 )}
+               </button>
+               <button onClick={() => setShowReader(false)} className="p-2 hover:bg-royal-800 rounded-full">
+                 <X size={24} />
+               </button>
+             </div>
+          </div>
+
+          <div className="flex-1 overflow-hidden flex flex-col md:flex-row">
+            {/* Left: Main Content */}
+            <div className="flex-1 overflow-y-auto p-8 md:p-12 bg-white max-w-4xl mx-auto shadow-xl my-4 md:my-8 rounded-lg md:mr-4">
+               <div className="mb-8 pb-4 border-b border-slate-100 flex justify-between items-end">
+                 <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Section {readerPage + 1}</span>
+                 <h1 className="text-3xl font-serif font-bold text-royal-900">{AGREEMENT_PAGES[readerPage].title}</h1>
+               </div>
+               <div className="prose prose-lg prose-slate max-w-none">
+                 {AGREEMENT_PAGES[readerPage].content}
+               </div>
+            </div>
+
+            {/* Right: Sidebar */}
+            <div className="w-full md:w-96 bg-slate-100 p-6 overflow-y-auto border-l border-slate-200 shrink-0">
+               <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-6">Related Notes</h3>
+               <div className="space-y-6">
+                 {AGREEMENT_PAGES[readerPage].sidebar.map((item, idx) => (
+                   <SidebarCard key={idx} item={item} />
+                 ))}
+               </div>
+            </div>
+          </div>
+
+          {/* Bottom Nav */}
+          <div className="bg-white border-t border-slate-200 p-4 flex justify-between items-center shrink-0">
              <button 
-               onClick={() => {
-                 setReaderPage(p => Math.max(0, p - 1));
-                 document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
-               }} 
-               disabled={readerPage === 0} 
-               className="flex items-center gap-4 px-16 py-6 rounded-3xl font-black text-xs uppercase tracking-widest border-2 border-slate-100 hover:bg-slate-50 transition-all disabled:opacity-20 active:scale-95 group"
+               onClick={() => setReaderPage(p => Math.max(0, p - 1))}
+               disabled={readerPage === 0}
+               className="flex items-center gap-2 px-6 py-3 rounded-lg font-bold disabled:opacity-30 hover:bg-slate-100 transition-colors"
              >
-                <ChevronLeft size={24} className="transition-transform group-hover:-translate-x-2" /> Previous
+               <ChevronLeft size={20} /> Previous
              </button>
-             <div className="flex gap-6">
-               {AGREEMENT_PAGES.map((_, i) => (
+
+             <div className="flex gap-1">
+               {AGREEMENT_PAGES.map((_, idx) => (
                  <div 
-                   key={i} 
-                   onClick={() => setReaderPage(i)}
-                   className={`h-3 rounded-full cursor-pointer transition-all duration-1000 ${i === readerPage ? 'bg-royal-950 w-24 shadow-2xl' : 'bg-slate-200 w-6 hover:bg-slate-300'}`}
-                 ></div>
+                   key={idx}
+                   className={`h-2 w-2 rounded-full transition-all ${idx === readerPage ? 'bg-royal-900 w-6' : 'bg-slate-300'}`}
+                 />
                ))}
              </div>
+
              <button 
-               onClick={() => {
-                 setReaderPage(p => Math.min(AGREEMENT_PAGES.length - 1, p + 1));
-                 document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
-               }} 
-               disabled={readerPage === AGREEMENT_PAGES.length - 1} 
-               className="flex items-center gap-4 px-16 py-6 bg-royal-950 text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-royal-900 transition-all shadow-2xl active:scale-95 group"
+               onClick={() => setReaderPage(p => Math.min(AGREEMENT_PAGES.length - 1, p + 1))}
+               disabled={readerPage === AGREEMENT_PAGES.length - 1}
+               className="flex items-center gap-2 px-6 py-3 bg-royal-900 text-white rounded-lg font-bold disabled:opacity-30 hover:bg-royal-800 transition-colors shadow-lg"
              >
-                Continue <ChevronRight size={24} className="transition-transform group-hover:translate-x-2" />
+               Next <ChevronRight size={20} />
              </button>
           </div>
         </div>
       )}
 
-      {/* Lexicon / Glossary Modal */}
+      {/* Audit Log Drawer */}
+      {showAuditLog && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity" onClick={() => setShowAuditLog(false)}></div>
+          <div className="relative w-full max-w-md bg-white h-full shadow-2xl p-8 overflow-y-auto animate-in slide-in-from-right duration-300 flex flex-col">
+            <div className="flex justify-between items-center mb-6 shrink-0">
+              <div className="flex items-center gap-3">
+                 <div className="bg-red-100 p-2 rounded-full text-red-600">
+                    <Siren size={24} />
+                 </div>
+                 <h2 className="text-2xl font-serif font-bold text-royal-900">Audit Log</h2>
+              </div>
+              <button onClick={() => setShowAuditLog(false)} className="p-2 hover:bg-slate-100 rounded-full">
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto space-y-4">
+              {alerts.length === 0 ? (
+                <div className="text-center py-12 text-slate-400">
+                   <CheckCircle className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                   <p>No system alerts triggered.</p>
+                   <p className="text-sm">Monitoring is active and quiet.</p>
+                </div>
+              ) : (
+                alerts.map((alert) => (
+                  <div key={alert.id} className="p-4 border border-red-100 bg-red-50/50 rounded-lg">
+                    <div className="flex justify-between items-start mb-2">
+                       <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500">{alert.timestamp}</span>
+                       <span className="px-2 py-0.5 bg-red-100 text-red-700 text-[10px] font-bold rounded uppercase">Critical</span>
+                    </div>
+                    <h4 className="font-bold text-red-900 mb-1">{alert.trigger}</h4>
+                    <div className="text-xs text-slate-600 mb-3">
+                       <span className="font-bold">Notified:</span> {alert.recipients.join(', ')}
+                    </div>
+                    <button
+                      onClick={() => { setShowAuditLog(false); setActiveSection('redline'); }}
+                      className="text-xs font-bold text-red-600 hover:text-red-800 hover:underline flex items-center gap-1"
+                    >
+                      View Protocol <ChevronRight size={10} />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Glossary Drawer */}
       {showGlossary && (
-        <div className="fixed inset-0 z-[70] flex justify-end">
-          <div className="absolute inset-0 bg-royal-950/70 backdrop-blur-2xl transition-opacity" onClick={() => setShowGlossary(false)}></div>
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm transition-opacity" onClick={() => setShowGlossary(false)}></div>
           <div className="relative w-full max-w-2xl bg-white h-full shadow-2xl p-20 overflow-y-auto animate-in slide-in-from-right duration-700 flex flex-col custom-scrollbar">
             <div className="flex justify-between items-center mb-24">
               <div>
