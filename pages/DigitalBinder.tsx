@@ -475,18 +475,20 @@ export default function DigitalBinder() {
   }, []);
 
   useEffect(() => {
+    const readerScrollContainer = document.querySelector('.flex-1.overflow-y-auto') as HTMLElement | null;
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!showReader) return;
 
       if (e.key === 'ArrowLeft') {
         if (readerPage > 0) {
           setReaderPage(p => p - 1);
-          document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
+          readerScrollContainer?.scrollTo(0, 0);
         }
       } else if (e.key === 'ArrowRight') {
         if (readerPage < AGREEMENT_PAGES.length - 1) {
           setReaderPage(p => p + 1);
-          document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
+          readerScrollContainer?.scrollTo(0, 0);
         }
       } else if (e.key === 'Escape') {
         setShowReader(false);
