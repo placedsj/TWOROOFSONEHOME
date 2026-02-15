@@ -485,20 +485,20 @@ export default function DigitalBinder() {
       }
 
       if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        e.stopPropagation();
         setReaderPage(p => {
           if (p > 0) {
-            e.preventDefault();
-            e.stopPropagation();
             readerScrollRef.current?.scrollTo(0, 0);
             return p - 1;
           }
           return p;
         });
       } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        e.stopPropagation();
         setReaderPage(p => {
           if (p < AGREEMENT_PAGES.length - 1) {
-            e.preventDefault();
-            e.stopPropagation();
             readerScrollRef.current?.scrollTo(0, 0);
             return p + 1;
           }
