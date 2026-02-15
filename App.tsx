@@ -1,14 +1,17 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient"; 
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "./components/ui/toaster";
 import { TooltipProvider } from "./components/ui/tooltip";
-import NotFound from "./pages/not-found";
-import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard";
-import Login from "./pages/Login";
-import DigitalBinder from "./pages/DigitalBinder";
+import { Loading } from "./components/Loading";
+
+// Lazy load pages for code splitting
+const NotFound = lazy(() => import("./pages/not-found"));
+const Home = lazy(() => import("./pages/Home"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Login = lazy(() => import("./pages/Login"));
+const DigitalBinder = lazy(() => import("./pages/DigitalBinder"));
 
 function Router() {
   return (
@@ -28,7 +31,9 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <Router />
+        <Suspense fallback={<Loading />}>
+          <Router />
+        </Suspense>
       </TooltipProvider>
     </QueryClientProvider>
   );
