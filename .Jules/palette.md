@@ -1,0 +1,1 @@
+## 2025-05-21 - Async Form State UX\n**Learning:** Even simulated async processes require full accessible state management (disabled inputs, aria-busy, visual feedback) to prevent user confusion and double-submission.\n**Action:** Always implement `isLoading` state that disables ALL interactive form elements, not just the submit button.
