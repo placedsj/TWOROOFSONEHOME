@@ -38,6 +38,7 @@ function Login() {
       // Simulate a login process
       // In a real app, this would be an API call
       setTimeout(() => {
+        setIsLoading(false);
         setLocation('/dashboard');
       }, 1500);
     }
@@ -94,6 +95,7 @@ function Login() {
             {isLoading ? 'Logging In...' : 'Log In'}
           </button>
         </form>
+        <p className="mt-6 text-sm text-slate-500">
         <p className="mt-6 text-sm text-slate-500 text-center">
           This is a placeholder login. Any credentials (min 8 chars) will "work".
         </p>
