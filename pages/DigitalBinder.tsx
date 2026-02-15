@@ -463,6 +463,7 @@ export default function DigitalBinder() {
   const [showGlossary, setShowGlossary] = useState(false);
   const [time, setTime] = useState(new Date());
   const [scrolled, setScrolled] = useState(false);
+  const readerContentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
@@ -473,6 +474,25 @@ export default function DigitalBinder() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    if (!showReader) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowReader(false);
+      } else if (e.key === 'ArrowLeft') {
+        setReaderPage(p => Math.max(0, p - 1));
+        readerContentRef.current?.scrollTo(0, 0);
+      } else if (e.key === 'ArrowRight') {
+        setReaderPage(p => Math.min(AGREEMENT_PAGES.length - 1, p + 1));
+        readerContentRef.current?.scrollTo(0, 0);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showReader]);
 
   const toggleSpeech = () => {
     if (isSpeaking) {
@@ -720,17 +740,21 @@ export default function DigitalBinder() {
                 >
                    {isSpeaking ? <><StopCircle size={24}/> Deactivate</> : <><Headphones size={24}/> Voice Feed</>}
                 </button>
-                <button 
-                   onClick={() => setShowReader(false)} 
-                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
-                >
-                   <X size={36} />
-                </button>
+                <div className="flex flex-col items-end gap-1">
+                   <button
+                      aria-label="Close Reader Mode"
+                      onClick={() => setShowReader(false)}
+                      className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
+                   >
+                      <X size={36} />
+                   </button>
+                   <span className="text-[9px] font-black text-royal-400 uppercase tracking-widest hidden sm:block">Press Esc</span>
+                </div>
              </div>
           </nav>
 
           <div className="flex-1 overflow-hidden flex flex-col lg:flex-row">
-             <div className="flex-1 overflow-y-auto p-16 lg:p-32 bg-white shadow-inner custom-scrollbar scroll-smooth">
+             <div ref={readerContentRef} className="flex-1 overflow-y-auto p-16 lg:p-32 bg-white shadow-inner custom-scrollbar scroll-smooth">
                 <div className="max-w-5xl mx-auto space-y-24 animate-in fade-in slide-in-from-bottom-12 duration-1000">
                    <div className="border-b border-slate-100 pb-16 flex justify-between items-end">
                       <div className="space-y-4">
@@ -772,31 +796,32 @@ export default function DigitalBinder() {
              <button 
                onClick={() => {
                  setReaderPage(p => Math.max(0, p - 1));
-                 document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
+                 readerContentRef.current?.scrollTo(0, 0);
                }} 
                disabled={readerPage === 0} 
                className="flex items-center gap-4 px-16 py-6 rounded-3xl font-black text-xs uppercase tracking-widest border-2 border-slate-100 hover:bg-slate-50 transition-all disabled:opacity-20 active:scale-95 group"
              >
-                <ChevronLeft size={24} className="transition-transform group-hover:-translate-x-2" /> Previous
+                <ChevronLeft size={24} className="transition-transform group-hover:-translate-x-2" /> <span className="hidden sm:inline">Previous</span> <span className="opacity-50">(←)</span>
              </button>
              <div className="flex gap-6">
                {AGREEMENT_PAGES.map((_, i) => (
-                 <div 
+                 <button
                    key={i} 
                    onClick={() => setReaderPage(i)}
+                   aria-label={`Go to page ${i + 1}`}
                    className={`h-3 rounded-full cursor-pointer transition-all duration-1000 ${i === readerPage ? 'bg-royal-950 w-24 shadow-2xl' : 'bg-slate-200 w-6 hover:bg-slate-300'}`}
-                 ></div>
+                 ></button>
                ))}
              </div>
              <button 
                onClick={() => {
                  setReaderPage(p => Math.min(AGREEMENT_PAGES.length - 1, p + 1));
-                 document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
+                 readerContentRef.current?.scrollTo(0, 0);
                }} 
                disabled={readerPage === AGREEMENT_PAGES.length - 1} 
                className="flex items-center gap-4 px-16 py-6 bg-royal-950 text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-royal-900 transition-all shadow-2xl active:scale-95 group"
              >
-                Continue <ChevronRight size={24} className="transition-transform group-hover:translate-x-2" />
+                <span className="opacity-50">(→)</span> <span className="hidden sm:inline">Continue</span> <ChevronRight size={24} className="transition-transform group-hover:translate-x-2" />
              </button>
           </div>
         </div>
