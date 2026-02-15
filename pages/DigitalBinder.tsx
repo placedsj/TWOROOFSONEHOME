@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { 
   Shield, Scale, Users, FileCheck, Heart, Calendar, 
   BookOpen, AlertTriangle, CheckCircle, X, ChevronRight, 
@@ -51,7 +51,7 @@ const GLOSSARY_TERMS = [
   { term: "Exhibit Generator", definition: "A monthly automated report documenting bio-medical results, meeting logs, and behavioral compliance." },
   { term: "Sunrise Clause", definition: "The target date (March 1, 2028) for automatic transition to 50/50 shared parenting." },
   { term: "Glass House", definition: "The principle of total transparency where privacy is waived for the sake of verification and trust." },
-  { term: "Jubilee Grace", definition: "The waiver of 0,000 in legal costs upon successful completion of the roadmap." },
+  { term: "Jubilee Grace", definition: "The waiver of $50,000 in legal costs upon successful completion of the roadmap." },
 ];
 
 // --- Specialized Interactive Components ---
@@ -470,11 +470,20 @@ const SidebarCard: React.FC<{ item: SidebarItem }> = ({ item }) => {
 const Modal = ({ isOpen, onClose, title, children }: { isOpen: boolean; onClose: () => void; title: string; children?: React.ReactNode }) => {
   if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-royal-900/80 backdrop-blur-sm">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-royal-900/80 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
         <div className="bg-royal-800 p-6 flex justify-between items-center text-white shrink-0">
-          <h2 className="text-2xl font-serif font-bold">{title}</h2>
-          <button onClick={onClose} className="p-2 hover:bg-royal-700 rounded-full transition-colors">
+          <h2 id="modal-title" className="text-2xl font-serif font-bold">{title}</h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-royal-700 rounded-full transition-colors"
+            aria-label="Close modal"
+          >
             <X size={24} />
           </button>
         </div>
@@ -573,8 +582,6 @@ export default function DigitalBinder() {
     }
   };
 
-  const [emmaSigned, setEmmaSigned] = useState(false);
-  const [craigSigned, setCraigSigned] = useState(false);
   const [time, setTime] = useState(new Date());
   const [scrolled, setScrolled] = useState(false);
 
@@ -590,7 +597,7 @@ export default function DigitalBinder() {
 
   const handleTriggerAlert = useCallback((trigger: string) => {
     const newAlert: AlertEntry = {
-      id: Math.random().toString(36).substr(2, 9),
+      id: Math.random().toString(36).slice(2, 11),
       trigger,
       timestamp: new Date().toLocaleString(),
       recipients: ["Parenting Coordinator", "Mother's Counsel", "Father's Counsel"],
@@ -649,7 +656,7 @@ export default function DigitalBinder() {
            <div className="flex items-center justify-between p-4 bg-royal-50 border border-royal-100 rounded-xl">
              <div>
                <div className="text-xs font-bold uppercase tracking-widest text-royal-500 mb-1">Current Status</div>
-               <div className="text-text-2xl font-serif font-bold text-royal-900">Phase 1: Foundation</div>
+               <div className="text-2xl font-serif font-bold text-royal-900">Phase 1: Foundation</div>
                <div className="text-sm text-slate-600">Month 1 of 6</div>
              </div>
              <div className="h-16 w-16 rounded-full bg-white border-4 border-royal-500 flex items-center justify-center shadow-sm">
@@ -971,7 +978,7 @@ export default function DigitalBinder() {
           <div className="grid md:grid-cols-2 gap-4">
              <div className="p-4 border border-gold-200 bg-gold-50 rounded-lg">
                <h4 className="font-bold text-gold-800 mb-2">The Jubilee Grace</h4>
-               <p className="text-sm text-slate-700">Father waives 0,000 in accumulated legal costs. All monitoring costs cease.</p>
+               <p className="text-sm text-slate-700">Father waives $50,000 in accumulated legal costs. All monitoring costs cease.</p>
              </div>
              <div className="p-4 border border-slate-200 bg-white rounded-lg">
                <h4 className="font-bold text-slate-800 mb-2">Automatic Transition</h4>
@@ -1233,8 +1240,10 @@ export default function DigitalBinder() {
 
              <div className="flex gap-1">
                {AGREEMENT_PAGES.map((_, idx) => (
-                 <div 
+                 <button
                    key={idx}
+                   onClick={() => setReaderPage(idx)}
+                   aria-label={`Go to page ${idx + 1}`}
                    className={`h-2 w-2 rounded-full transition-all ${idx === readerPage ? 'bg-royal-900 w-6' : 'bg-slate-300'}`}
                  />
                ))}
