@@ -45,9 +45,9 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-8 text-center">
-      <div className="bg-white p-10 rounded-xl shadow-lg w-full max-w-sm">
-        <h1 className="text-4xl font-serif font-bold text-royal-900 mb-6">Login</h1>
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-8 font-sans">
+      <div className="bg-white p-10 rounded-xl shadow-lg w-full max-w-sm text-left">
+        <h1 className="text-4xl font-serif font-bold text-royal-900 mb-6 text-center">Login</h1>
 
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm text-left">
@@ -96,6 +96,7 @@ function Login() {
           </button>
         </form>
         <p className="mt-6 text-sm text-slate-500">
+        <p className="mt-6 text-sm text-slate-500 text-center">
           This is a placeholder login. Any credentials (min 8 chars) will "work".
         </p>
       </div>
