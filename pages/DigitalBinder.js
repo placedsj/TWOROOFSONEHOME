@@ -1,0 +1,1 @@
+// Legacy JS file disabled. Using pages/DigitalBinder.tsx.

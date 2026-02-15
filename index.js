@@ -1,0 +1,1 @@
+// Legacy JS entry disabled to resolve preview conflict. Using index.tsx.

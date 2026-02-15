@@ -474,31 +474,6 @@ export default function DigitalBinder() {
     };
   }, []);
 
-  useEffect(() => {
-    const readerScrollContainer = document.querySelector('.flex-1.overflow-y-auto') as HTMLElement | null;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!showReader) return;
-
-      if (e.key === 'ArrowLeft') {
-        if (readerPage > 0) {
-          setReaderPage(p => p - 1);
-          readerScrollContainer?.scrollTo(0, 0);
-        }
-      } else if (e.key === 'ArrowRight') {
-        if (readerPage < AGREEMENT_PAGES.length - 1) {
-          setReaderPage(p => p + 1);
-          readerScrollContainer?.scrollTo(0, 0);
-        }
-      } else if (e.key === 'Escape') {
-        setShowReader(false);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showReader, readerPage]);
-
   const toggleSpeech = () => {
     if (isSpeaking) {
       window.speechSynthesis.cancel();
@@ -747,8 +722,6 @@ export default function DigitalBinder() {
                 </button>
                 <button 
                    onClick={() => setShowReader(false)} 
-                   aria-keyshortcuts="Escape"
-                   aria-label="Close Reader"
                    className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
                 >
                    <X size={36} />
@@ -802,12 +775,9 @@ export default function DigitalBinder() {
                  document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
                }} 
                disabled={readerPage === 0} 
-               aria-keyshortcuts="ArrowLeft"
                className="flex items-center gap-4 px-16 py-6 rounded-3xl font-black text-xs uppercase tracking-widest border-2 border-slate-100 hover:bg-slate-50 transition-all disabled:opacity-20 active:scale-95 group"
              >
-                <ChevronLeft size={24} className="transition-transform group-hover:-translate-x-2" />
-                Previous
-                <kbd className="hidden sm:inline-block ml-1 px-2 py-0.5 text-[10px] font-mono bg-slate-100 text-slate-400 rounded border border-slate-200 shadow-sm">←</kbd>
+                <ChevronLeft size={24} className="transition-transform group-hover:-translate-x-2" /> Previous
              </button>
              <div className="flex gap-6">
                {AGREEMENT_PAGES.map((_, i) => (
@@ -824,12 +794,9 @@ export default function DigitalBinder() {
                  document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
                }} 
                disabled={readerPage === AGREEMENT_PAGES.length - 1} 
-               aria-keyshortcuts="ArrowRight"
                className="flex items-center gap-4 px-16 py-6 bg-royal-950 text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-royal-900 transition-all shadow-2xl active:scale-95 group"
              >
-                Continue
-                <kbd className="hidden sm:inline-block ml-1 px-2 py-0.5 text-[10px] font-mono bg-white/10 text-white/50 rounded border border-white/10 shadow-sm">→</kbd>
-                <ChevronRight size={24} className="transition-transform group-hover:translate-x-2" />
+                Continue <ChevronRight size={24} className="transition-transform group-hover:translate-x-2" />
              </button>
           </div>
         </div>
