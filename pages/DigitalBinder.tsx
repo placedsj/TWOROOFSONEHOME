@@ -458,7 +458,7 @@ export default function DigitalBinder() {
   const [showReader, setShowReader] = useState(false);
   const [readerPage, setReaderPage] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const readerScrollRef = useRef<HTMLElement | null>(null);
+  const readerScrollRef = useRef<HTMLDivElement | null>(null);
   const [emmaSigned, setEmmaSigned] = useState(false);
   const [craigSigned, setCraigSigned] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
@@ -782,7 +782,7 @@ export default function DigitalBinder() {
           </nav>
 
           <div className="flex-1 overflow-hidden flex flex-col lg:flex-row">
-             <div ref={(el) => { readerScrollRef.current = el; }} className="flex-1 overflow-y-auto p-16 lg:p-32 bg-white shadow-inner custom-scrollbar scroll-smooth">
+             <div ref={readerScrollRef} className="flex-1 overflow-y-auto p-16 lg:p-32 bg-white shadow-inner custom-scrollbar scroll-smooth">
                 <div className="max-w-5xl mx-auto space-y-24 animate-in fade-in slide-in-from-bottom-12 duration-1000">
                    <div className="border-b border-slate-100 pb-16 flex justify-between items-end">
                       <div className="space-y-4">
