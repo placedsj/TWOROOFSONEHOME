@@ -114,6 +114,8 @@ const MaternalDirectiveControl = () => {
              <button 
                key={d.id}
                onClick={() => setActiveDomain(d.id)}
+               aria-label={`${d.title} Domain`}
+               title={d.title}
                className={`p-3 rounded-2xl transition-all ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
              >
                {d.icon}
@@ -474,6 +476,39 @@ export default function DigitalBinder() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (showReader) {
+        if (e.key === 'ArrowRight') {
+          setReaderPage(prev => {
+            if (prev < AGREEMENT_PAGES.length - 1) {
+              document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
+              return prev + 1;
+            }
+            return prev;
+          });
+        } else if (e.key === 'ArrowLeft') {
+          setReaderPage(prev => {
+            if (prev > 0) {
+              document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
+              return prev - 1;
+            }
+            return prev;
+          });
+        } else if (e.key === 'Escape') {
+          setShowReader(false);
+        }
+      } else if (showGlossary) {
+        if (e.key === 'Escape') {
+          setShowGlossary(false);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showReader, showGlossary]);
+
   const toggleSpeech = () => {
     if (isSpeaking) {
       window.speechSynthesis.cancel();
@@ -722,6 +757,7 @@ export default function DigitalBinder() {
                 </button>
                 <button 
                    onClick={() => setShowReader(false)} 
+                   aria-label="Close Reader Mode"
                    className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
                 >
                    <X size={36} />
@@ -814,6 +850,7 @@ export default function DigitalBinder() {
               </div>
               <button 
                 onClick={() => setShowGlossary(false)} 
+                aria-label="Close Glossary"
                 className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
               >
                 <X size={48} />
