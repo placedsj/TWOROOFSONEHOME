@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'wouter';
+import { Loader2 } from 'lucide-react';
 
 function Login() {
   const [, setLocation] = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = () => {
+    setIsLoading(true);
     // Simulate a login process
-    alert('Simulating login... Redirecting to dashboard.');
-    setLocation('/dashboard');
+    setTimeout(() => {
+      setLocation('/dashboard');
+    }, 1500);
   };
 
   return (
@@ -19,21 +23,37 @@ function Login() {
             <input 
               type="text" 
               placeholder="Username" 
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"
+              aria-label="Username"
+              required
+              autoComplete="username"
+              disabled={isLoading}
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500 disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
           <div className="mb-6">
             <input 
               type="password" 
               placeholder="Password" 
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"
+              aria-label="Password"
+              required
+              autoComplete="current-password"
+              disabled={isLoading}
+              className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500 disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
           <button 
             type="submit" 
-            className="w-full px-6 py-3 bg-gold-600 text-white font-bold rounded-lg hover:bg-gold-500 transition-colors"
+            disabled={isLoading}
+            className="w-full px-6 py-3 bg-gold-600 text-white font-bold rounded-lg hover:bg-gold-500 transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Log In
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                Logging in...
+              </>
+            ) : (
+              'Log In'
+            )}
           </button>
         </form>
         <p className="mt-6 text-sm text-slate-500">
