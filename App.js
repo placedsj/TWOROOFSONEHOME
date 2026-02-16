@@ -1,1 +1,0 @@
-// Legacy JS entry disabled. Using App.tsx.
