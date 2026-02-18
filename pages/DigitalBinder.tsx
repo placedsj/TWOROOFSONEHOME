@@ -474,6 +474,31 @@ export default function DigitalBinder() {
     };
   }, []);
 
+  // Keyboard Navigation for Reader Mode
+  useEffect(() => {
+    if (!showReader) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') {
+        setReaderPage(p => Math.min(AGREEMENT_PAGES.length - 1, p + 1));
+      } else if (e.key === 'ArrowLeft') {
+        setReaderPage(p => Math.max(0, p - 1));
+      } else if (e.key === 'Escape') {
+        setShowReader(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showReader]);
+
+  // Auto-scroll to top when page changes in Reader Mode
+  useEffect(() => {
+    if (showReader) {
+      document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
+    }
+  }, [readerPage, showReader]);
+
   const toggleSpeech = () => {
     if (isSpeaking) {
       window.speechSynthesis.cancel();
@@ -770,10 +795,7 @@ export default function DigitalBinder() {
           {/* Reader Control Dock */}
           <div className="bg-white border-t border-slate-100 p-10 flex justify-between items-center px-24 shadow-[0_-20px_60px_rgba(0,0,0,0.05)] relative z-20">
              <button 
-               onClick={() => {
-                 setReaderPage(p => Math.max(0, p - 1));
-                 document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
-               }} 
+               onClick={() => setReaderPage(p => Math.max(0, p - 1))}
                disabled={readerPage === 0} 
                className="flex items-center gap-4 px-16 py-6 rounded-3xl font-black text-xs uppercase tracking-widest border-2 border-slate-100 hover:bg-slate-50 transition-all disabled:opacity-20 active:scale-95 group"
              >
@@ -789,10 +811,7 @@ export default function DigitalBinder() {
                ))}
              </div>
              <button 
-               onClick={() => {
-                 setReaderPage(p => Math.min(AGREEMENT_PAGES.length - 1, p + 1));
-                 document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
-               }} 
+               onClick={() => setReaderPage(p => Math.min(AGREEMENT_PAGES.length - 1, p + 1))}
                disabled={readerPage === AGREEMENT_PAGES.length - 1} 
                className="flex items-center gap-4 px-16 py-6 bg-royal-950 text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-royal-900 transition-all shadow-2xl active:scale-95 group"
              >
