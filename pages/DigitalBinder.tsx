@@ -474,6 +474,26 @@ export default function DigitalBinder() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!showReader && !showGlossary) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (showReader) {
+        if (e.key === 'ArrowLeft') {
+          setReaderPage(p => Math.max(0, p - 1));
+          document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
+        } else if (e.key === 'ArrowRight') {
+          setReaderPage(p => Math.min(AGREEMENT_PAGES.length - 1, p + 1));
+          document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
+        } else if (e.key === 'Escape') setShowReader(false);
+      }
+      if (showGlossary && e.key === 'Escape') setShowGlossary(false);
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showReader, showGlossary]);
+
   const toggleSpeech = () => {
     if (isSpeaking) {
       window.speechSynthesis.cancel();
@@ -723,6 +743,7 @@ export default function DigitalBinder() {
                 <button 
                    onClick={() => setShowReader(false)} 
                    className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
+                   aria-label="Close Reader Mode"
                 >
                    <X size={36} />
                 </button>
@@ -815,6 +836,7 @@ export default function DigitalBinder() {
               <button 
                 onClick={() => setShowGlossary(false)} 
                 className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
+                aria-label="Close Glossary"
               >
                 <X size={48} />
               </button>
