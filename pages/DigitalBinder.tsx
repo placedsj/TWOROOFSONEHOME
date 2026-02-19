@@ -458,6 +458,7 @@ export default function DigitalBinder() {
   const [showReader, setShowReader] = useState(false);
   const [readerPage, setReaderPage] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const readerScrollRef = useRef<HTMLDivElement | null>(null);
   const [emmaSigned, setEmmaSigned] = useState(false);
   const [craigSigned, setCraigSigned] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
@@ -478,7 +479,31 @@ export default function DigitalBinder() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!showReader) return;
 
+      // Ignore modified key combinations so we don't interfere with system/browser shortcuts
+      if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) {
+        return;
+      }
+
       if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        e.stopPropagation();
+        setReaderPage(p => {
+          if (p > 0) {
+            readerScrollRef.current?.scrollTo(0, 0);
+            return p - 1;
+          }
+          return p;
+        });
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        e.stopPropagation();
+        setReaderPage(p => {
+          if (p < AGREEMENT_PAGES.length - 1) {
+            readerScrollRef.current?.scrollTo(0, 0);
+            return p + 1;
+          }
+          return p;
+        });
         if (readerPage > 0) {
           setReaderPage(p => p - 1);
           document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
@@ -489,13 +514,18 @@ export default function DigitalBinder() {
           document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
         }
       } else if (e.key === 'Escape') {
+        e.preventDefault();
+        if (isSpeaking) {
+          window.speechSynthesis.cancel();
+          setIsSpeaking(false);
+        }
         setShowReader(false);
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showReader, readerPage]);
+  }, [showReader, isSpeaking]);
 
   const toggleSpeech = () => {
     if (isSpeaking) {
@@ -744,7 +774,13 @@ export default function DigitalBinder() {
                    {isSpeaking ? <><StopCircle size={24}/> Deactivate</> : <><Headphones size={24}/> Voice Feed</>}
                 </button>
                 <button 
-                   onClick={() => setShowReader(false)} 
+                   onClick={() => {
+                     if (isSpeaking) {
+                       window.speechSynthesis.cancel();
+                       setIsSpeaking(false);
+                     }
+                     setShowReader(false);
+                   }} 
                    aria-keyshortcuts="Escape"
                    aria-label="Close Reader"
                    className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
@@ -755,7 +791,7 @@ export default function DigitalBinder() {
           </nav>
 
           <div className="flex-1 overflow-hidden flex flex-col lg:flex-row">
-             <div className="flex-1 overflow-y-auto p-16 lg:p-32 bg-white shadow-inner custom-scrollbar scroll-smooth">
+             <div ref={readerScrollRef} className="flex-1 overflow-y-auto p-16 lg:p-32 bg-white shadow-inner custom-scrollbar scroll-smooth">
                 <div className="max-w-5xl mx-auto space-y-24 animate-in fade-in slide-in-from-bottom-12 duration-1000">
                    <div className="border-b border-slate-100 pb-16 flex justify-between items-end">
                       <div className="space-y-4">

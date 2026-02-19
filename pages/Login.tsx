@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'wouter';
 import { Loader2 } from 'lucide-react';
 
@@ -8,6 +8,7 @@ function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const validateInput = () => {
     if (!username.trim()) {
@@ -31,13 +32,21 @@ function Login() {
     return true;
   };
 
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateInput()) {
       setIsLoading(true);
       // Simulate a login process
       // In a real app, this would be an API call
-      setTimeout(() => {
+      timeoutRef.current = setTimeout(() => {
         setIsLoading(false);
         setLocation('/dashboard');
       }, 1500);
@@ -95,6 +104,7 @@ function Login() {
             {isLoading ? 'Logging In...' : 'Log In'}
           </button>
         </form>
+        <p className="mt-6 text-sm text-slate-500 text-center">
         <p className="mt-6 text-sm text-slate-500">
           This is a placeholder login. Any credentials (min 8 chars) will "work".
         </p>
