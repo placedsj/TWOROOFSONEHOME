@@ -504,6 +504,15 @@ export default function DigitalBinder() {
           }
           return p;
         });
+        if (readerPage > 0) {
+          setReaderPage(p => p - 1);
+          document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
+        }
+      } else if (e.key === 'ArrowRight') {
+        if (readerPage < AGREEMENT_PAGES.length - 1) {
+          setReaderPage(p => p + 1);
+          document.querySelector('.flex-1.overflow-y-auto')?.scrollTo(0, 0);
+        }
       } else if (e.key === 'Escape') {
         e.preventDefault();
         if (isSpeaking) {
