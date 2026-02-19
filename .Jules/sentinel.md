@@ -1,0 +1,4 @@
+## 2026-02-19 - Hardcoded Secret Exposure in Build Config
+**Vulnerability:** The `vite.config.ts` file contained a `define` block that explicitly injected `process.env.GEMINI_API_KEY` into the client-side bundle. This exposed the API key to anyone who could inspect the application code, even if it wasn't currently being used by the application logic.
+**Learning:** Developers sometimes use `define` or environment variable injection to make backend secrets available to frontend code without realizing that this makes the secret public. In a client-side application, any secret injected this way is compromised.
+**Prevention:** Never use `define` or `VITE_` prefix for sensitive keys that should remain private. If a client-side app needs to access a protected API, it should do so through a backend proxy that holds the secrets, not by embedding the secrets in the client code.
