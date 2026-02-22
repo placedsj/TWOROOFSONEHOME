@@ -1,0 +1,4 @@
+## 2026-02-22 - Unnecessary Environment Variable Exposure in Client Bundles
+**Vulnerability:** The `vite.config.ts` file contained a `define` block that explicitly exposed `process.env.API_KEY` and `process.env.GEMINI_API_KEY` to the client-side bundle. These keys were not actually used by the client application.
+**Learning:** Boilerplate configurations or previous iterations of code can leave behind dangerous artifacts like exposed secrets. Even if a key isn't currently "secret" or used, exposing it increases the attack surface and can lead to accidental leaks if the key becomes sensitive later.
+**Prevention:** Regularly audit build configurations (`vite.config.ts`, `webpack.config.js`, etc.) to ensure only necessary environment variables are exposed to the client. Remove any `define` or `EnvironmentPlugin` entries that are not strictly required for the frontend to function.
