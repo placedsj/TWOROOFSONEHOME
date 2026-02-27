@@ -54,7 +54,14 @@ export const RoadmapTracker = () => {
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-royal-300">Phase Completion Rate</span>
               <span className="text-4xl font-mono font-black text-gold-500">{sunrise.percentage}%</span>
             </div>
-            <div className="h-4 bg-royal-900 rounded-full overflow-hidden border border-white/5 shadow-inner">
+            <div
+              className="h-4 bg-royal-900 rounded-full overflow-hidden border border-white/5 shadow-inner"
+              role="progressbar"
+              aria-valuenow={sunrise.percentage}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="Sunrise Protocol Progress"
+            >
               <div 
                 className="h-full bg-gradient-to-r from-gold-700 via-gold-500 to-gold-400 transition-all duration-1000 ease-out relative"
                 style={{ width: `${sunrise.percentage}%` }}
@@ -102,7 +109,14 @@ export const RoadmapTracker = () => {
                     {janeBlock.isComplete ? "COMPLETED" : `${janeBlock.daysRemaining} DAYS`}
                   </span>
                </div>
-               <div className="h-2 bg-slate-50 rounded-full overflow-hidden border border-slate-100">
+               <div
+                 className="h-2 bg-slate-50 rounded-full overflow-hidden border border-slate-100"
+                 role="progressbar"
+                 aria-valuenow={janeBlock.percentage}
+                 aria-valuemin={0}
+                 aria-valuemax={100}
+                 aria-label="Jane Block Protocol Progress"
+               >
                   <div 
                     className={`h-full transition-all duration-1000 ${janeBlock.isComplete ? 'bg-emerald-500' : 'bg-royal-600'}`} 
                     style={{ width: `${janeBlock.percentage}%` }}
