@@ -1,0 +1,3 @@
+## 2024-11-20 - [Component Isolation for High-Frequency State]
+**Learning:** High-frequency state updates like `setInterval` timers for clocks or countdowns placed at the top of a large component tree (e.g., `DigitalBinder.tsx`) cause the entire component and all its children to unnecessarily re-render on every tick.
+**Action:** Isolate the high-frequency state into a dedicated leaf component (`LiveClock`) to limit the re-render scope and drastically improve performance, especially for visually complex or deeply nested UI structures.
