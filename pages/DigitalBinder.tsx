@@ -114,7 +114,9 @@ const MaternalDirectiveControl = () => {
              <button 
                key={d.id}
                onClick={() => setActiveDomain(d.id)}
-               className={`p-3 rounded-2xl transition-all ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+               aria-label={`Select ${d.title} Domain`}
+               aria-pressed={activeDomain === d.id}
+               className={`p-3 rounded-2xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-royal-500 ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
              >
                {d.icon}
              </button>
@@ -802,11 +804,13 @@ export default function DigitalBinder() {
              </button>
              <div className="flex gap-6">
                {AGREEMENT_PAGES.map((_, i) => (
-                 <div 
+                 <button
                    key={i} 
                    onClick={() => setReaderPage(i)}
-                   className={`h-3 rounded-full cursor-pointer transition-all duration-1000 ${i === readerPage ? 'bg-royal-950 w-24 shadow-2xl' : 'bg-slate-200 w-6 hover:bg-slate-300'}`}
-                 ></div>
+                   aria-label={`Go to Reader page ${i + 1}`}
+                   aria-selected={i === readerPage}
+                   className={`h-3 rounded-full cursor-pointer transition-all duration-1000 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-royal-500 focus-visible:ring-offset-2 ${i === readerPage ? 'bg-royal-950 w-24 shadow-2xl' : 'bg-slate-200 w-6 hover:bg-slate-300'}`}
+                 ></button>
                ))}
              </div>
              <button 
