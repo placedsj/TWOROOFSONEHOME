@@ -1,0 +1,4 @@
+## 2024-05-24 - [Vite Config Leakage]
+**Vulnerability:** Vite config exposed `GEMINI_API_KEY` to the client bundle via the `define` block. The configuration `define: { 'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY) }` hardcodes the server-side environment variable into the client-side JavaScript.
+**Learning:** This is a critical security risk because anyone who visits the site can inspect the client-side bundle and extract the API key. The application does not actually require `GEMINI_API_KEY` for client-side operations (it uses mock data).
+**Prevention:** Never use the `define` block in `vite.config.ts` to inject sensitive server-side environment secrets into the client-side code. Environment variables needed by the client should be prefixed with `VITE_` and accessed via `import.meta.env`, but secrets should strictly remain on the server.
