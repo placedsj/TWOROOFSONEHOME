@@ -1,0 +1,3 @@
+## 2024-03-24 - Isolate High-Frequency State Updates
+**Learning:** High-frequency state updates (like a 1-second `setInterval` clock) placed near the root of a large React component tree (e.g., `pages/DigitalBinder.tsx`) cause massive, unnecessary re-renders of the entire page content.
+**Action:** Always extract high-frequency update logic into dedicated leaf components (like `<LiveClock />`) so only the smallest necessary DOM nodes re-render on each tick.
