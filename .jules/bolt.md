@@ -1,0 +1,3 @@
+## 2024-03-01 - Component Isolation for High-Frequency State Updates
+**Learning:** Having a high-frequency `setInterval` (like a 1-second timer) directly inside a large, complex parent component (e.g., `DigitalBinder.tsx`) causes the entire component tree to unnecessarily re-render on every tick. This is a severe performance anti-pattern in React.
+**Action:** Isolate the fast-updating state (e.g., `time`) and its associated `useEffect` interval into a small, dedicated leaf component (e.g., `<LiveClock />`). This scopes the re-renders purely to that specific element, preserving the performance of the broader application tree.
