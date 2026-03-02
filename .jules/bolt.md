@@ -1,0 +1,3 @@
+## 2025-02-28 - Isolating High-Frequency State Updates
+**Learning:** Found a critical performance bottleneck in `pages/DigitalBinder.tsx` where a `setInterval` was causing the entire massive component tree to re-render every second just to update a clock display in the top bar. This is a common React anti-pattern that drastically affects performance on complex pages.
+**Action:** Always isolate high-frequency state updates (like timers or clocks) into dedicated leaf components (e.g., `<LiveClock />`). This prevents the heavy parent component and all its children from undergoing unnecessary reconciliation cycles.
