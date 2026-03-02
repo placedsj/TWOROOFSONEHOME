@@ -1,0 +1,3 @@
+## 2024-05-14 - Isolate High-Frequency State Updates
+**Learning:** In complex React views like `pages/DigitalBinder.tsx`, maintaining a global high-frequency state update (like a 1-second `setInterval` for a clock) at the top-level component causes severe performance degradation, forcing the entire component tree (including expensive SVG and layout recalculations) to re-render every second unnecessarily.
+**Action:** Always isolate state that changes constantly (like timers, active hover states, etc.) into its own leaf component (`LiveClock.tsx`) so only that specific sub-tree re-renders, protecting the main application's performance.
