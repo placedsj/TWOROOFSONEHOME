@@ -1,0 +1,3 @@
+## 2024-03-24 - Form Submission UX and Accessibility Enhancements
+**Learning:** Implementing visual feedback (like a loading spinner) during simulated asynchronous submissions significantly improves the user's perception of system responsiveness. Additionally, explicitly associating inputs with labels via `htmlFor` and `id` provides critical context for screen readers that placeholder text alone cannot offer.
+**Action:** Ensure all future form implementations prioritize explicit labeling over placeholders and include clear, disabling visual feedback states during processing to prevent duplicate submissions and guide user expectations.
