@@ -1,0 +1,3 @@
+## 2024-05-18 - Isolated High-Frequency State Updates
+**Learning:** In a massive, complex component like `DigitalBinder` with numerous interactive elements and heavy layout calculation, having a high-frequency state update (like a 1-second interval for a clock) defined at the root level forces the entire component tree to re-render every second. This can lead to noticeable performance degradation and high CPU usage.
+**Action:** Always isolate high-frequency state updates (e.g., timers, clocks, continuous scroll listeners) into dedicated leaf components (like `LiveClock`) to prevent unnecessary re-renders of large parent components.
