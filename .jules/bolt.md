@@ -1,0 +1,3 @@
+## 2024-12-19 - Isolate High-Frequency State Updates
+**Learning:** Having a high-frequency interval (like `setInterval` firing every 1000ms) that calls `setState` at the root of a large component forces the entire component tree to re-render, creating a significant performance bottleneck.
+**Action:** Always isolate high-frequency state updates (like clocks, timers, or live counters) into their own dedicated, small leaf components. This restricts the rapid re-renders to only the isolated component, preventing expensive parent or sibling components from unnecessarily updating.
