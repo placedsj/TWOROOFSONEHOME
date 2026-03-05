@@ -19,6 +19,7 @@ function Login() {
             <input 
               type="text" 
               placeholder="Username" 
+              autoComplete="username"
               className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"
             />
           </div>
@@ -26,6 +27,7 @@ function Login() {
             <input 
               type="password" 
               placeholder="Password" 
+              autoComplete="current-password"
               className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"
             />
           </div>
