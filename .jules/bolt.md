@@ -1,0 +1,3 @@
+## 2024-03-05 - Isolate High-Frequency State Updates
+**Learning:** `pages/DigitalBinder.tsx` was re-rendering every single second because of an inline `setInterval` updating a `time` state at the root of a massive component tree. This caused significant unnecessary DOM diffing and CPU usage.
+**Action:** Extract high-frequency state updates (like clocks/timers) into tiny leaf components (`LiveClock`). This isolates the re-renders to only the elements that actually change, preserving the performance of large parent components.
