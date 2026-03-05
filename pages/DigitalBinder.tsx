@@ -113,8 +113,10 @@ const MaternalDirectiveControl = () => {
            {domains.map(d => (
              <button 
                key={d.id}
+               aria-label={`Select ${d.title} domain`}
+               aria-pressed={activeDomain === d.id}
                onClick={() => setActiveDomain(d.id)}
-               className={`p-3 rounded-2xl transition-all ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+               className={`p-3 rounded-2xl transition-all focus-visible:ring-2 focus-visible:ring-royal-500 focus-visible:outline-none ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
              >
                {d.icon}
              </button>
@@ -403,7 +405,7 @@ const InteractiveExhibit = () => {
          {logs.length === 0 && <div className="text-royal-800 text-center mt-12 italic">STANDING BY FOR DIRECTIVE ...</div>}
       </div>
 
-      <div className="space-y-3 relative z-10">
+      <div className="space-y-3 relative z-10" role="progressbar" aria-valuenow={Math.round(progress)} aria-valuemin={0} aria-valuemax={100} aria-label="Verification Progress">
          <div className="flex justify-between text-[11px] font-black uppercase text-royal-500 tracking-[0.4em]">
             <span>System Integrity</span>
             <span className={isGenerating ? 'text-gold-500' : 'text-royal-700'}>{Math.round(progress)}%</span>
