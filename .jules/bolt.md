@@ -1,0 +1,3 @@
+## 2024-05-18 - Isolated High-Frequency State Updates
+**Learning:** High-frequency state updates like a 1-second `setInterval` for a clock trigger constant re-renders. If left in a heavy parent component like `DigitalBinder`, this causes massive performance bottlenecks.
+**Action:** Isolate high-frequency state updates (e.g., timers) into dedicated leaf components (like `LiveClock`) to prevent heavy parent components from re-rendering unnecessarily.
