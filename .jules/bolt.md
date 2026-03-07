@@ -1,0 +1,3 @@
+## 2024-03-07 - Isolate High-Frequency State Updates
+**Learning:** High-frequency state updates (like a 1-second interval timer) placed at the top of a large component tree cause massive unnecessary re-renders. Throttling scroll events with `requestAnimationFrame` is also necessary to prevent UI jank.
+**Action:** Always isolate timers and other rapidly changing states into dedicated leaf components (e.g., `<LiveClock />`) to prevent their parent from re-rendering. Throttle scroll event handlers using `requestAnimationFrame`.
