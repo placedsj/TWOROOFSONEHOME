@@ -16,15 +16,23 @@ function Login() {
         <h1 className="text-4xl font-serif font-bold text-royal-900 mb-6">Login</h1>
         <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
           <div className="mb-4">
+            <label htmlFor="username" className="sr-only">Username</label>
             <input 
+              id="username"
+              name="username"
               type="text" 
+              autoComplete="username"
               placeholder="Username" 
               className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"
             />
           </div>
           <div className="mb-6">
+            <label htmlFor="password" className="sr-only">Password</label>
             <input 
+              id="password"
+              name="password"
               type="password" 
+              autoComplete="current-password"
               placeholder="Password" 
               className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"
             />
