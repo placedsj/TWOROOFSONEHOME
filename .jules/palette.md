@@ -1,0 +1,3 @@
+## 2024-03-08 - Accessible Dynamic Controls
+**Learning:** Dynamic icon-only controls mapped from arrays (e.g., domain selection buttons) often lack text-equivalent data for screen readers, while custom progress bars (like div-based indicators) lack semantic meaning without explicit ARIA roles and value attributes.
+**Action:** Always include explicit `aria-label` attributes using mapped text equivalents (e.g., `aria-label={\`Select ${d.title}\`}`) and ensure custom progress visualizers include `role="progressbar"` with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax` to preserve accessibility context.
