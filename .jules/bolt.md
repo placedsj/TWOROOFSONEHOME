@@ -1,0 +1,3 @@
+## 2024-03-22 - Component Isolation for High-Frequency State
+**Learning:** High-frequency state updates (like a 1-second interval for a clock) placed in a large parent component (`DigitalBinder`) cause the entire component tree to re-render unnecessarily every second, severely impacting performance.
+**Action:** Isolate high-frequency state updates into dedicated leaf components (like `LiveClock`) to constrain re-renders strictly to the elements that need to change.
