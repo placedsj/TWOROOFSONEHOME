@@ -1,0 +1,3 @@
+## 2024-05-18 - Isolate High-Frequency State Updates
+**Learning:** High-frequency state updates (e.g., timers, scroll handlers) in large parent components cause unnecessary full re-renders, significantly impacting performance and causing UI jank.
+**Action:** Isolate high-frequency state updates into dedicated leaf components (like LiveClock) and use requestAnimationFrame with a ticking flag for high-frequency events (like scrolling) to prevent heavy parent components from re-rendering unnecessarily.
