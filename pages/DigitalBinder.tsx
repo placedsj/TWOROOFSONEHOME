@@ -113,6 +113,7 @@ const MaternalDirectiveControl = () => {
            {domains.map(d => (
              <button 
                key={d.id}
+               aria-label={`Select ${d.title}`}
                onClick={() => setActiveDomain(d.id)}
                className={`p-3 rounded-2xl transition-all ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
              >
@@ -408,7 +409,14 @@ const InteractiveExhibit = () => {
             <span>System Integrity</span>
             <span className={isGenerating ? 'text-gold-500' : 'text-royal-700'}>{Math.round(progress)}%</span>
          </div>
-         <div className="h-2 bg-royal-900/50 rounded-full overflow-hidden border border-white/5 shadow-inner">
+         <div
+            className="h-2 bg-royal-900/50 rounded-full overflow-hidden border border-white/5 shadow-inner"
+            role="progressbar"
+            aria-valuenow={Math.round(progress)}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Verification Progress"
+         >
             <div className={`h-full bg-gradient-to-r from-emerald-600 to-emerald-400 transition-all duration-300 relative ${isGenerating ? 'opacity-100' : 'opacity-20'}`} style={{ width: `${progress}%` }}>
                <div className="absolute top-0 right-0 bottom-0 w-4 bg-white/20 blur-md"></div>
             </div>
