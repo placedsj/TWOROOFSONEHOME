@@ -1,0 +1,3 @@
+## 2024-05-18 - Isolate high-frequency state updates and throttle scroll listeners
+**Learning:** High-frequency state updates (like a 1-second timer) at the top level of a heavy component (like `DigitalBinder`) cause the entire component tree to re-render unnecessarily, degrading performance. Additionally, raw scroll event listeners trigger state updates synchronously too often, causing UI jank.
+**Action:** Isolate high-frequency state updates into dedicated leaf components (e.g., `LiveClock`) to limit the re-render scope. Always throttle high-frequency DOM events (like `scroll`) using `requestAnimationFrame` and a `ticking` flag to align state updates with screen refreshes.

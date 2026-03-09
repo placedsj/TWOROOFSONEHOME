@@ -10,6 +10,7 @@ import {
   BrainCircuit, Sparkles, MapPin, Fingerprint
 } from 'lucide-react';
 import { RoadmapTracker } from '../components/RoadmapTracker';
+import { LiveClock } from '../components/LiveClock';
 
 // --- Types & Data ---
 
@@ -461,17 +462,25 @@ export default function DigitalBinder() {
   const [emmaSigned, setEmmaSigned] = useState(false);
   const [craigSigned, setCraigSigned] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
-  const [time, setTime] = useState(new Date());
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      clearInterval(timer);
-      window.removeEventListener('scroll', handleScroll);
+    let ticking = false;
+
+    // ⚡ Bolt Optimization: Throttle scroll event listeners using requestAnimationFrame
+    // to align state updates with screen refreshes, preventing synchronous UI jank.
+    // Impact: Limits state updates on rapid scrolling to maximum 60fps.
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 20);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
@@ -520,10 +529,7 @@ export default function DigitalBinder() {
              <Shield size={14} /> THE HARPER BASELINE PROTOCOL
           </div>
         </div>
-        <div className="font-mono flex items-center gap-6">
-          <span className="opacity-40">{time.toLocaleDateString()}</span>
-          <span className="text-white font-black">{time.toLocaleTimeString()}</span>
-        </div>
+        <LiveClock />
       </div>
 
       {/* Modern Sticky Nav */}
