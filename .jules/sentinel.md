@@ -1,0 +1,4 @@
+## 2026-03-09 - Missing Content Security Policy (CSP)
+**Vulnerability:** The application was missing a Content Security Policy (CSP) meta tag, allowing any external scripts, styles, or connections to be loaded, which significantly increases the risk and impact of Cross-Site Scripting (XSS) attacks.
+**Learning:** Vite/React applications without a server-side component must implement CSP via a `<meta>` tag in `index.html` to restrict resource loading. The CDN usage (Tailwind, esm.sh) requires specific domains to be whitelisted.
+**Prevention:** Always include a restrictive CSP `<meta>` tag in the base HTML file of frontend-only applications, explicitly allowing only required external domains and minimizing `'unsafe-inline'` usage.
