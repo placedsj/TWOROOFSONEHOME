@@ -1,0 +1,4 @@
+## 2024-03-10 - Removed hardcoded API key exposure from vite.config.ts
+**Vulnerability:** The `vite.config.ts` file used the `define` property to inject the `GEMINI_API_KEY` directly into the client-side code as `process.env.API_KEY` and `process.env.GEMINI_API_KEY`. This exposes the secret API key to anyone who views the frontend application source code.
+**Learning:** Vite's `define` option replaces global variables during the build process. Any secrets defined here will be available in the public client bundle. It's often used incorrectly to bypass Vite's standard environment variable loading (which requires the `VITE_` prefix to be exposed).
+**Prevention:** Never inject secrets directly into the frontend bundle using `define` or `VITE_` prefixed environment variables. Secrets should be kept on the server. If a secret API key needs to be accessed, it should be done through a backend proxy or serverless function, never from the browser.
