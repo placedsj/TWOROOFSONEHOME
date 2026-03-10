@@ -1,0 +1,3 @@
+## 2024-05-24 - Isolated Clock State
+**Learning:** High-frequency `setInterval` updates (like clocks ticking every second) at the root level of a massive component tree (like `DigitalBinder`) cause expensive, unnecessary re-renders of the entire page.
+**Action:** Always extract high-frequency local state into dedicated leaf components (e.g., `<LiveClock />`) to isolate the re-render scope and dramatically improve application performance.
