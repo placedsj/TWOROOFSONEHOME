@@ -331,6 +331,26 @@ const StatusBadge = ({ label, active }: { label: string; active?: boolean }) => 
   </div>
 );
 
+// --- Performance Optimizaton: Isolated Clock Component ---
+// Isolating the high-frequency state update (timer every second)
+// into a dedicated leaf component prevents the massive DigitalBinder
+// component (and all its children) from re-rendering every second.
+const LiveClock = () => {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="font-mono flex items-center gap-6">
+      <span className="opacity-40">{time.toLocaleDateString()}</span>
+      <span className="text-white font-black">{time.toLocaleTimeString()}</span>
+    </div>
+  );
+};
+
 const HeartbeatHeader = () => {
   return (
     <div className="flex items-center gap-4 py-2 px-6 bg-royal-950/40 backdrop-blur-md border border-white/5 rounded-2xl shadow-2xl">
@@ -461,15 +481,12 @@ export default function DigitalBinder() {
   const [emmaSigned, setEmmaSigned] = useState(false);
   const [craigSigned, setCraigSigned] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
-  const [time, setTime] = useState(new Date());
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => {
-      clearInterval(timer);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
@@ -520,10 +537,7 @@ export default function DigitalBinder() {
              <Shield size={14} /> THE HARPER BASELINE PROTOCOL
           </div>
         </div>
-        <div className="font-mono flex items-center gap-6">
-          <span className="opacity-40">{time.toLocaleDateString()}</span>
-          <span className="text-white font-black">{time.toLocaleTimeString()}</span>
-        </div>
+        <LiveClock />
       </div>
 
       {/* Modern Sticky Nav */}
