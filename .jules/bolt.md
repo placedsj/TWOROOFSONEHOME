@@ -1,0 +1,3 @@
+## 2024-03-24 - Isolate High-Frequency State Updates
+**Learning:** Heavy parent components (like `DigitalBinder`) will unnecessarily re-render completely if they hold high-frequency state updates, such as a 1-second interval timer.
+**Action:** Always isolate frequent state updates (like clocks, progress bars, or live trackers) into dedicated, lightweight leaf components to prevent heavy parent component re-renders.
