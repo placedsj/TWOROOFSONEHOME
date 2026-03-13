@@ -1,0 +1,3 @@
+## 2024-03-13 - Extract high-frequency state updates to leaf components
+**Learning:** In React components with deeply nested layouts and a huge DOM footprint (like `DigitalBinder.tsx`), simple high-frequency state updates (e.g., a `setInterval` triggering every second for a clock) defined at the parent level cause the entire component to re-render constantly. This creates a significant, unnecessary performance bottleneck.
+**Action:** Isolate high-frequency, self-contained state updates into dedicated leaf components (like a `LiveClock`) to limit the scope of re-renders without affecting the massive parent component's performance.
