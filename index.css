@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "DM Sans", sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-serif: "Playfair Display", serif;
+  
+  --color-royal-50: #f0f4f8;
+  --color-royal-100: #d9e2ec;
+  --color-royal-200: #bcccdc;
+  --color-royal-300: #9fb3c8;
+  --color-royal-400: #829ab1;
+  --color-royal-500: #627d98;
+  --color-royal-600: #486581;
+  --color-royal-700: #334e68;
+  --color-royal-800: #243b53;
+  --color-royal-900: #102a43;
+  --color-royal-950: #081a2d;
+
+  --color-gold-50: #fffbeb;
+  --color-gold-100: #fcefc7;
+  --color-gold-200: #fae3a3;
+  --color-gold-300: #fcd34d;
+  --color-gold-400: #fbbf24;
+  --color-gold-500: #f59e0b;
+  --color-gold-600: #d97706;
+  --color-gold-700: #b45309;
+  --color-gold-800: #92400e;
+  --color-gold-900: #78350f;
+
+  --animate-spin-slow: spin-slow 20s linear infinite;
+  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+
+  @keyframes spin-slow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+}
