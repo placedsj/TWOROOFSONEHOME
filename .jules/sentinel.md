@@ -1,0 +1,4 @@
+## 2024-03-14 - Exposing Server-side API Keys to Client Bundle via Vite Define
+**Vulnerability:** The Vite configuration used `define: { 'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY) }`, which hardcoded the server-side API key directly into the built client-side JavaScript bundle.
+**Learning:** Using Vite's `define` configuration directly maps server environment variables to the frontend bundle, exposing sensitive credentials in plaintext to anyone inspecting the client code.
+**Prevention:** Never use Vite's `define` to inject secrets. Environment variables meant for the client should be handled securely, either by an intermediate server API or, if truly required on the client, restricted with strict CORS/IP constraints (though still not secure from users).
