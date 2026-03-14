@@ -1,0 +1,3 @@
+## 2024-03-14 - Icon-Only Buttons Lacked ARIA Labels
+**Learning:** Many interactive icon buttons in complex dashboard components (e.g. modals, readers, domain selectors) were missing explicit `aria-label` attributes, making them inaccessible to screen reader users.
+**Action:** Enforce a strict linting rule or code review checklist for accessible interactive elements, ensuring all visually icon-only buttons receive descriptive `aria-label`s.
