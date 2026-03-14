@@ -1,0 +1,3 @@
+## 2024-05-24 - Accessible Forms and Loading States
+**Learning:** When adding labels to existing designs without altering visual layout, `sr-only` classes on `<label>` elements provide crucial screen reader context while maintaining design fidelity. Simulated async actions need immediate visual feedback (disabling buttons, adding spinners like `Loader2`) to prevent duplicate submissions and user confusion.
+**Action:** Always include `<label>` (visually hidden or visible) and ensure async actions have distinct loading and disabled states.
