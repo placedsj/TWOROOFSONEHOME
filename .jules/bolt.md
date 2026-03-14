@@ -1,0 +1,3 @@
+## 2025-03-01 - Prevent Full Page Re-renders from Timers
+**Learning:** In React, placing a frequent `setInterval` (like a 1-second clock) inside a massive root component (like `DigitalBinder`) causes the entire component tree to re-render every second.
+**Action:** Isolate frequently updating state into smaller, dedicated components (like `ClockDisplay`) so only that tiny portion of the DOM re-renders.
