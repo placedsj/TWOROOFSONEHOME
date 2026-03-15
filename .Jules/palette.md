@@ -1,0 +1,3 @@
+## 2024-03-15 - Explicit Labels and Loading Feedback in Login
+**Learning:** Replaced implicit placeholders with explicit `<label>` elements associated via `htmlFor` and `id` to significantly improve screen reader navigation. Additionally, avoiding `alert()` for form submissions and replacing it with simulated async visual feedback (via `lucide-react` `Loader2`) creates a noticeably less jarring transition to new routes.
+**Action:** Always utilize explicit `<label>` elements linked via `id` for inputs and provide visual feedback for potentially synchronous operations instead of using browser alerts.
