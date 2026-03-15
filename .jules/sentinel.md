@@ -1,0 +1,4 @@
+## 2026-03-15 - Hardcoded API Key Exposure via Vite Config
+**Vulnerability:** The Gemini API key was being hardcoded into the client-side bundle using the `define` property in `vite.config.ts`.
+**Learning:** Using `define` or `import.meta.env` for sensitive server-side secrets in Vite exposes them in plaintext to anyone inspecting the frontend source code. This is because Vite performs a static string replacement at build time.
+**Prevention:** Never use Vite's `define` configuration to inject secrets into the client bundle. API keys should either be accessed exclusively on a secure backend or, if absolutely necessary on the client, passed dynamically (and securely) from a backend service, though the latter is generally not recommended for direct third-party API keys unless properly proxied.
