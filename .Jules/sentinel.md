@@ -1,0 +1,4 @@
+## 2025-03-16 - Remove hardcoded API key exposure in Vite config
+**Vulnerability:** The Vite configuration used `define` to inject `env.GEMINI_API_KEY` directly into the client bundle as `process.env.API_KEY`. This exposed a potentially sensitive server-side secret in plaintext to the browser.
+**Learning:** Using Vite's `define` for secrets, especially `process.env`, replaces them everywhere in the compiled JS. This is a common but dangerous pattern that leaks backend secrets to the frontend.
+**Prevention:** Never use Vite's `define` to inject sensitive keys into the client. Only use `VITE_` prefixed variables for safe, public configuration via `import.meta.env`. Sensitive API calls should be proxied through a backend.
