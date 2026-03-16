@@ -113,6 +113,7 @@ const MaternalDirectiveControl = () => {
            {domains.map(d => (
              <button 
                key={d.id}
+               aria-label={`Select ${d.title} domain`}
                onClick={() => setActiveDomain(d.id)}
                className={`p-3 rounded-2xl transition-all ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
              >
@@ -715,12 +716,14 @@ export default function DigitalBinder() {
              </div>
              <div className="flex gap-6 relative z-10">
                 <button 
+                   aria-label={isSpeaking ? "Deactivate voice feed" : "Activate voice feed"}
                    onClick={toggleSpeech} 
                    className={`flex items-center gap-4 px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 ${isSpeaking ? 'bg-red-500 animate-pulse shadow-[0_0_40px_rgba(239,68,68,0.4)]' : 'bg-royal-800 hover:bg-royal-700 border border-white/10'}`}
                 >
                    {isSpeaking ? <><StopCircle size={24}/> Deactivate</> : <><Headphones size={24}/> Voice Feed</>}
                 </button>
                 <button 
+                   aria-label="Close reader mode"
                    onClick={() => setShowReader(false)} 
                    className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
                 >
@@ -813,6 +816,7 @@ export default function DigitalBinder() {
                 <h2 className="text-6xl font-serif font-black text-royal-950 tracking-tighter">Agreement Lexicon</h2>
               </div>
               <button 
+                aria-label="Close glossary"
                 onClick={() => setShowGlossary(false)} 
                 className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
               >
