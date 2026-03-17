@@ -1,0 +1,3 @@
+## 2026-03-17 - Prevent massive React re-renders with isolated fast-updating state
+**Learning:** The `DigitalBinder` component had a `setInterval` that updated a `time` state every second. Because `DigitalBinder` is a massive component containing many complex child sections, this caused the entire page to re-render every second, severely hurting performance.
+**Action:** Extract fast-updating state (like a live clock with `setInterval`) into isolated child components to prevent unnecessary re-renders of the parent component.
