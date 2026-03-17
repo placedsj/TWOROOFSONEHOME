@@ -368,7 +368,8 @@ export default function DigitalBinder() {
 
   const handleTriggerAlert = (trigger: string) => {
     const newAlert: AlertEntry = {
-      id: Math.random().toString(36).substr(2, 9),
+      // 🛡️ SECURITY: Use crypto.randomUUID() for secure, collision-resistant IDs instead of predictable Math.random()
+      id: crypto.randomUUID(),
       trigger,
       timestamp: new Date().toLocaleString(),
       recipients: ["Parenting Coordinator", "Mother's Counsel", "Father's Counsel"],
