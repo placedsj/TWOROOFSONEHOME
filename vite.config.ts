@@ -11,10 +11,8 @@ export default defineConfig(({ mode }) => {
         host: '0.0.0.0',
       },
       plugins: [react(), tailwindcss()],
-      define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
-      },
+      // SECURITY FIX: Removed 'define' block that injected GEMINI_API_KEY into the client bundle.
+      // Sensitive keys must never be exposed to the client. Use VITE_ prefix for public vars.
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
