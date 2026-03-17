@@ -1,0 +1,3 @@
+## 2024-05-24 - Component Isolation for Fast-Updating State
+**Learning:** Massive React components (like `DigitalBinder.tsx`) that include fast-updating state (like a clock updating every second via `setInterval`) will cause the entire component to re-render every second, leading to significant performance degradation and battery drain.
+**Action:** Always extract fast-updating, localized state (like live clocks or timers) into isolated child components to prevent the parent from unnecessary, massive re-renders.
