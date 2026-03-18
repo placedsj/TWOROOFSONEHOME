@@ -1,0 +1,3 @@
+## 2026-03-18 - Isolated Clock State
+**Learning:** A massive component like `DigitalBinder.tsx` using `setInterval` to update a clock every second forces the entire view (including interactive children) to re-render every second, severely degrading performance.
+**Action:** Extract fast-updating state (like a live clock with `setInterval`) into isolated child components to prevent massive, unnecessary parent re-renders.
