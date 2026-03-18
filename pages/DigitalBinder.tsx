@@ -722,6 +722,7 @@ export default function DigitalBinder() {
                 </button>
                 <button 
                    onClick={() => setShowReader(false)} 
+                   aria-label="Close reader"
                    className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
                 >
                    <X size={36} />
@@ -814,6 +815,7 @@ export default function DigitalBinder() {
               </div>
               <button 
                 onClick={() => setShowGlossary(false)} 
+                aria-label="Close glossary"
                 className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
               >
                 <X size={48} />
