@@ -1,0 +1,3 @@
+## 2024-05-18 - Improve Accessible Context on Standard Icons
+**Learning:** Found a recurring a11y pattern where standard icon-only close buttons (`<X size={24} />`) in modals and dialogs across the application lacked descriptive `aria-label` attributes and keyboard focus-visible states. This makes them invisible to screen readers and difficult to navigate to or interact with when using keyboard controls.
+**Action:** When implementing modal/dialog close buttons using icon-only patterns, consistently apply contextual `aria-label` descriptions (e.g. `aria-label="Close glossary"`) and standard focus styling (`focus:outline-none focus-visible:ring-2 focus-visible:ring-royal-500`) to ensure they are fully usable by all users.
