@@ -1,0 +1,3 @@
+## 2024-03-19 - Responsive Buttons Losing Accessible Names
+**Learning:** Buttons that use CSS classes like `hidden md:inline` to hide text on mobile devices become icon-only buttons. Without an `aria-label`, these buttons lose their accessible name for screen reader users on mobile devices, even though they appear accessible on desktop.
+**Action:** Always provide an `aria-label` (and ideally a `title` tooltip) on buttons where text might be conditionally hidden by responsive CSS breakpoints.
