@@ -1,0 +1,4 @@
+## 2024-05-19 - Removed exposed API key in vite define config
+**Vulnerability:** The `vite.config.ts` was using Vite's `define` feature to globally inject `process.env.API_KEY` and `process.env.GEMINI_API_KEY`, setting them to `JSON.stringify(env.GEMINI_API_KEY)`. This embeds the sensitive Gemini API key directly into the public client-side JavaScript bundle in plain text.
+**Learning:** Never inject sensitive server-side environment variables (like API keys) into the client bundle via bundler tools like Vite (`define`), Webpack (`DefinePlugin`), or Rollup (`replace`), unless those variables are safe to be public (e.g. `VITE_` prefixed public variables).
+**Prevention:** Avoid exposing sensitive secrets to the client side. Keep API keys on the server and create a backend proxy if the frontend needs to access a service requiring authentication, or use securely scoped public keys if supported by the service.
