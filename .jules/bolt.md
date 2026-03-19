@@ -1,0 +1,3 @@
+## 2024-05-24 - Prevent Massive Re-renders from Timers
+**Learning:** A simple `setInterval` clock at the top level of a heavy component (like `DigitalBinder.tsx`) causes the entire component tree to re-render every second, destroying performance.
+**Action:** Always extract fast-updating state (like live clocks or timers) into their own isolated child components so only that small piece of the DOM re-renders.
