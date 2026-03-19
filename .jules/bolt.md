@@ -1,0 +1,3 @@
+## 2024-03-20 - Isolate Fast-Updating State (DigitalBinder)
+**Learning:** Placing a 1-second `setInterval` clock at the root of a massive, nested React component tree (`DigitalBinder.tsx`) forces a complete re-render of all sub-components (InteractiveExhibit, Readers, etc.) every second, killing UI performance.
+**Action:** Always extract fast-updating state (like live clocks or progress bars) into their own isolated child components. React will only re-render the tiny isolated component instead of the entire tree.
