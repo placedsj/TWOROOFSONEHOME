@@ -15,17 +15,27 @@ function Login() {
       <div className="bg-white p-10 rounded-xl shadow-lg w-full max-w-sm">
         <h1 className="text-4xl font-serif font-bold text-royal-900 mb-6">Login</h1>
         <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
-          <div className="mb-4">
+          <div className="mb-4 text-left">
+            <label htmlFor="username" className="block text-sm font-medium text-slate-700 mb-1">
+              Username <span className="text-red-500">*</span>
+            </label>
             <input 
+              id="username"
               type="text" 
-              placeholder="Username" 
+              placeholder="Enter your username"
+              required
               className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"
             />
           </div>
-          <div className="mb-6">
+          <div className="mb-6 text-left">
+            <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1">
+              Password <span className="text-red-500">*</span>
+            </label>
             <input 
+              id="password"
               type="password" 
-              placeholder="Password" 
+              placeholder="Enter your password"
+              required
               className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500"
             />
           </div>
