@@ -50,14 +50,14 @@ function Home() {
         <div className={`flex flex-col sm:flex-row gap-6 justify-center items-center transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
           <button 
             onClick={() => setLocation('/binder')} 
-            className="group relative px-10 py-5 bg-gold-600 hover:bg-gold-500 text-royal-950 font-black text-sm uppercase tracking-[0.2em] rounded-2xl transition-all duration-500 hover:shadow-[0_0_40px_rgba(245,158,11,0.4)] flex items-center gap-4 overflow-hidden"
+            className="group relative px-10 py-5 bg-gold-600 hover:bg-gold-500 text-royal-950 font-black text-sm uppercase tracking-[0.2em] rounded-2xl transition-all duration-500 hover:shadow-[0_0_40px_rgba(245,158,11,0.4)] flex items-center gap-4 overflow-hidden focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-royal-950 focus-visible:outline-none"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
             Access Digital Binder
             <ArrowRight className="group-hover:translate-x-2 transition-transform" size={18} />
           </button>
           
-          <button className="px-10 py-5 bg-white/5 hover:bg-white/10 text-white font-bold text-sm uppercase tracking-[0.2em] rounded-2xl border border-white/10 transition-all backdrop-blur-sm flex items-center gap-4">
+          <button className="px-10 py-5 bg-white/5 hover:bg-white/10 text-white font-bold text-sm uppercase tracking-[0.2em] rounded-2xl border border-white/10 transition-all backdrop-blur-sm flex items-center gap-4 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-royal-950 focus-visible:outline-none">
             Case Details <ChevronRight size={18} className="opacity-40" />
           </button>
         </div>
