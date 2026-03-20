@@ -1,0 +1,3 @@
+## 2024-05-18 - Semantic Tags and Keyboard Navigation for Interactive Cards
+**Learning:** Interactive "module cards" (like the Agreement Modules) were built using `<div>` elements with `onClick` handlers, which entirely bypassed keyboard navigation and screen readers. Additionally, critical dynamic "terminal" output lacked `aria-live` regions, making status updates invisible to screen readers.
+**Action:** Always use semantic `<button>` elements for interactive cards to get keyboard focus and space/enter key support for free. Add `focus-visible:ring-2` to custom interactive elements to ensure visual feedback during keyboard navigation. Use `aria-live="polite"` on dynamic text logs to announce ongoing processes.
