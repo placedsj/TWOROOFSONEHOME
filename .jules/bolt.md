@@ -1,0 +1,3 @@
+## 2025-02-28 - Component Isolation and Fast-Updating State
+**Learning:** Massive React re-renders in heavy components (e.g., `DigitalBinder.tsx`) occur when fast-updating state (like a live clock with `setInterval`) is kept at the top level. Additionally, using `setInterval` in components tracking long-term milestones (months/years) like `RoadmapTracker.tsx` needlessly consumes CPU cycles.
+**Action:** Extract fast-updating state into isolated child components, and avoid `setInterval` for forcing minute-by-minute re-renders when it's structurally redundant (e.g., when milestone calculators already instantiate `new Date()`).
