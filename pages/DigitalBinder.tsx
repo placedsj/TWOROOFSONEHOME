@@ -721,8 +721,9 @@ export default function DigitalBinder() {
                    {isSpeaking ? <><StopCircle size={24}/> Deactivate</> : <><Headphones size={24}/> Voice Feed</>}
                 </button>
                 <button 
+                   aria-label="Close reader"
                    onClick={() => setShowReader(false)} 
-                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
+                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-royal-500"
                 >
                    <X size={36} />
                 </button>
@@ -813,8 +814,9 @@ export default function DigitalBinder() {
                 <h2 className="text-6xl font-serif font-black text-royal-950 tracking-tighter">Agreement Lexicon</h2>
               </div>
               <button 
+                aria-label="Close lexicon"
                 onClick={() => setShowGlossary(false)} 
-                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
+                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-royal-500"
               >
                 <X size={48} />
               </button>
