@@ -1,16 +1,11 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { calculateSunriseProgress, calculateJubileeGraceValue, calculateJaneBlock } from '../lib/milestoneCalculators';
 import { Sun, Lock, ShieldCheck, Clock, TrendingDown, ChevronRight, Zap } from 'lucide-react';
 
 export const RoadmapTracker = () => {
-  const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setNow(new Date()), 60000);
-    return () => clearInterval(timer);
-  }, []);
-
+  // ⚡ Bolt: Removed unnecessary minute-by-minute setInterval re-renders.
+  // Milestones are long-term (months/years); forced re-renders waste CPU cycles.
   const sunrise = calculateSunriseProgress();
   const jubilee = calculateJubileeGraceValue(sunrise.percentage);
   const janeBlock = calculateJaneBlock();
