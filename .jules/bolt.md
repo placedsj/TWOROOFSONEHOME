@@ -1,0 +1,3 @@
+## 2024-03-20 - Prevent massive re-renders by extracting interval state
+**Learning:** In heavy components like `DigitalBinder.tsx`, placing fast-updating state (like a live clock using `setInterval(..., 1000)`) at the root level causes the entire component tree to re-render every second. This is a significant codebase-specific performance bottleneck.
+**Action:** Extract fast-updating, localized UI state into isolated child components so that only the small child component re-renders.
