@@ -1,0 +1,3 @@
+## 2024-03-20 - Prevent Massive Re-renders from Fast-Updating State
+**Learning:** Using `setInterval` to update local state (like a live clock) inside a heavy parent component (e.g., `DigitalBinder.tsx`) causes the entire DOM structure to needlessly re-render every second. Furthermore, long-term trackers (e.g., `RoadmapTracker.tsx`) tracking months/days do not require an active `setInterval` locally if the core calculation function instantiates `new Date()` internally anyway.
+**Action:** Always extract fast-updating state into isolated child components, and eliminate unused or unnecessary `setInterval` calls in long-term trackers to save CPU cycles.
