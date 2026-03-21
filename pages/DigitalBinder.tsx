@@ -454,6 +454,23 @@ const SidebarCard: React.FC<{ item: SidebarItem }> = ({ item }) => {
 
 // --- Main Application Component ---
 
+// ⚡ Bolt: Extracted fast-updating `time` state into an isolated component.
+// This prevents the massive `DigitalBinder` parent component (and all its children)
+// from re-rendering every single second.
+const LiveClock = () => {
+  const [time, setTime] = useState(new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+  return (
+    <div className="font-mono flex items-center gap-6">
+      <span className="opacity-40">{time.toLocaleDateString()}</span>
+      <span className="text-white font-black">{time.toLocaleTimeString()}</span>
+    </div>
+  );
+};
+
 export default function DigitalBinder() {
   const [showReader, setShowReader] = useState(false);
   const [readerPage, setReaderPage] = useState(0);
@@ -461,15 +478,12 @@ export default function DigitalBinder() {
   const [emmaSigned, setEmmaSigned] = useState(false);
   const [craigSigned, setCraigSigned] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
-  const [time, setTime] = useState(new Date());
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => {
-      clearInterval(timer);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
@@ -500,10 +514,7 @@ export default function DigitalBinder() {
              <Shield size={14} /> THE HARPER BASELINE PROTOCOL
           </div>
         </div>
-        <div className="font-mono flex items-center gap-6">
-          <span className="opacity-40">{time.toLocaleDateString()}</span>
-          <span className="text-white font-black">{time.toLocaleTimeString()}</span>
-        </div>
+        <LiveClock />
       </div>
 
       {/* Modern Sticky Nav */}
