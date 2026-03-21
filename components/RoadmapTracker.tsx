@@ -1,16 +1,12 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { calculateSunriseProgress, calculateJubileeGraceValue, calculateJaneBlock } from '../lib/milestoneCalculators';
 import { Sun, Lock, ShieldCheck, Clock, TrendingDown, ChevronRight, Zap } from 'lucide-react';
 
 export const RoadmapTracker = () => {
-  const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setNow(new Date()), 60000);
-    return () => clearInterval(timer);
-  }, []);
-
+  // ⚡ Bolt Performance Optimization:
+  // Removed local setInterval that needlessly caused this long-term tracker to re-render every minute.
+  // The underlying calculate functions instantiate `new Date()` internally anyway.
   const sunrise = calculateSunriseProgress();
   const jubilee = calculateJubileeGraceValue(sunrise.percentage);
   const janeBlock = calculateJaneBlock();
