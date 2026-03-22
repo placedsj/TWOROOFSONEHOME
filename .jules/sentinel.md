@@ -1,0 +1,4 @@
+## 2024-05-20 - Exposing Secrets via Vite define
+**Vulnerability:** The Gemini API Key was being explicitly bundled and exposed directly in the client-side JavaScript via Vite's `define` configuration.
+**Learning:** Vite's `define` configuration performs static string replacement at build time; never use it to map sensitive server-side environment variables to client-side globals like `process.env`, as this directly embeds the plaintext secret into the client bundle.
+**Prevention:** Ensure API keys and other secrets are only used on the server-side, or if they must be used on the client, ensure they are properly scoped and handled securely.
