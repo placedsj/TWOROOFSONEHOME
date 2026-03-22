@@ -722,7 +722,9 @@ export default function DigitalBinder() {
                 </button>
                 <button 
                    onClick={() => setShowReader(false)} 
-                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
+                   aria-label="Close reader"
+                   title="Close reader"
+                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl focus-visible:ring-2 focus-visible:ring-white/50 focus:outline-none"
                 >
                    <X size={36} />
                 </button>
@@ -814,7 +816,9 @@ export default function DigitalBinder() {
               </div>
               <button 
                 onClick={() => setShowGlossary(false)} 
-                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
+                aria-label="Close lexicon"
+                title="Close lexicon"
+                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90 focus-visible:ring-2 focus-visible:ring-red-500 focus:outline-none"
               >
                 <X size={48} />
               </button>
