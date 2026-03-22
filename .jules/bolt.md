@@ -1,0 +1,3 @@
+## 2024-05-24 - Isolated State for High-Frequency Updates
+**Learning:** A `setInterval` that triggers a state update every second at the top level of a large parent component (like `DigitalBinder.tsx`) causes massive, unnecessary full-page re-renders, severely impacting frontend performance.
+**Action:** Extract fast-updating state (like a live clock) into its own isolated, small React component. This ensures only the tiny isolated component re-renders every second, leaving the massive parent component unaffected.
