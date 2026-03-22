@@ -114,7 +114,9 @@ const MaternalDirectiveControl = () => {
              <button 
                key={d.id}
                onClick={() => setActiveDomain(d.id)}
-               className={`p-3 rounded-2xl transition-all ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+               aria-label={`View ${d.title} domain`}
+               title={d.title}
+               className={`p-3 rounded-2xl transition-all focus-visible:ring-2 focus-visible:ring-royal-500 focus-visible:outline-none ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
              >
                {d.icon}
              </button>
