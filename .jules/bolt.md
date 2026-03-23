@@ -1,0 +1,3 @@
+## 2024-05-24 - Component Isolation for Fast-Updating State
+**Learning:** Top-level application components (like DigitalBinder) that track fast-updating state (e.g., a clock updated via setInterval every second) will cause the entire page's React component tree to re-render unnecessarily.
+**Action:** Extract the fast-updating state and its presentation logic into a tiny, isolated component (e.g., LiveClock) so that only the small component re-renders.
