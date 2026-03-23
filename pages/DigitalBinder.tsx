@@ -525,14 +525,16 @@ export default function DigitalBinder() {
             <HeartbeatHeader />
             <div className="h-10 w-px bg-slate-200 mx-2"></div>
             <button 
+               aria-label="Open Lexicon Glossary"
                onClick={() => setShowGlossary(true)} 
-               className="hidden md:flex px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all items-center gap-3 border border-slate-200 active:scale-95"
+               className="hidden md:flex px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all items-center gap-3 border border-slate-200 active:scale-95 focus-visible:ring-2"
             >
               <BookOpen size={18} /> Lexicon
             </button>
             <button 
+               aria-label="Open Parenting Directive Reader"
                onClick={() => setShowReader(true)} 
-               className="px-8 py-4 bg-royal-950 hover:bg-royal-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-royal-900/20 flex items-center gap-3 active:scale-95 transition-all"
+               className="px-8 py-4 bg-royal-950 hover:bg-royal-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-royal-900/20 flex items-center gap-3 active:scale-95 transition-all focus-visible:ring-2"
             >
               <Scroll size={22} /> <span className="hidden sm:inline">Open Directive</span>
             </button>
@@ -715,14 +717,16 @@ export default function DigitalBinder() {
              </div>
              <div className="flex gap-6 relative z-10">
                 <button 
+                   aria-label={isSpeaking ? "Deactivate Voice Feed" : "Activate Voice Feed"}
                    onClick={toggleSpeech} 
-                   className={`flex items-center gap-4 px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 ${isSpeaking ? 'bg-red-500 animate-pulse shadow-[0_0_40px_rgba(239,68,68,0.4)]' : 'bg-royal-800 hover:bg-royal-700 border border-white/10'}`}
+                   className={`flex items-center gap-4 px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 focus-visible:ring-2 ${isSpeaking ? 'bg-red-500 animate-pulse shadow-[0_0_40px_rgba(239,68,68,0.4)]' : 'bg-royal-800 hover:bg-royal-700 border border-white/10'}`}
                 >
                    {isSpeaking ? <><StopCircle size={24}/> Deactivate</> : <><Headphones size={24}/> Voice Feed</>}
                 </button>
                 <button 
+                   aria-label="Close Reader Mode"
                    onClick={() => setShowReader(false)} 
-                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
+                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl focus-visible:ring-2"
                 >
                    <X size={36} />
                 </button>
@@ -813,8 +817,9 @@ export default function DigitalBinder() {
                 <h2 className="text-6xl font-serif font-black text-royal-950 tracking-tighter">Agreement Lexicon</h2>
               </div>
               <button 
+                aria-label="Close Glossary"
                 onClick={() => setShowGlossary(false)} 
-                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
+                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90 focus-visible:ring-2"
               >
                 <X size={48} />
               </button>
