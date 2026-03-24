@@ -1,0 +1,3 @@
+## 2024-05-15 - Massive Re-renders from Top-Level Clock State
+**Learning:** In `DigitalBinder.tsx`, a `setInterval` was updating a `time` state every second at the root of a massive component tree. This caused continuous full-page React re-renders for the entire dashboard, severely bottlenecking CPU usage and framerates.
+**Action:** Always extract fast-updating states (like live clocks or timers) into isolated, leaf-level child components so their continuous state updates do not trigger cascading re-renders across unaffected massive parent components.
