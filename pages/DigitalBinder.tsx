@@ -452,6 +452,26 @@ const SidebarCard: React.FC<{ item: SidebarItem }> = ({ item }) => {
   );
 };
 
+// ⚡ Bolt Performance Optimization:
+// What: Extracted the fast-updating live clock (setInterval every 1s) into its own isolated LiveClock component.
+// Why: Leaving the state at the top level caused the massive DigitalBinder parent component (and all its complex children) to re-render every single second.
+// Impact: Eliminates 100% of unnecessary full-page re-renders caused by the clock, significantly reducing CPU usage and improving frame rates.
+const LiveClock = () => {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <>
+      <span className="opacity-40">{time.toLocaleDateString()}</span>
+      <span className="text-white font-black">{time.toLocaleTimeString()}</span>
+    </>
+  );
+};
+
 // --- Main Application Component ---
 
 export default function DigitalBinder() {
@@ -461,15 +481,12 @@ export default function DigitalBinder() {
   const [emmaSigned, setEmmaSigned] = useState(false);
   const [craigSigned, setCraigSigned] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
-  const [time, setTime] = useState(new Date());
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => {
-      clearInterval(timer);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
@@ -501,8 +518,7 @@ export default function DigitalBinder() {
           </div>
         </div>
         <div className="font-mono flex items-center gap-6">
-          <span className="opacity-40">{time.toLocaleDateString()}</span>
-          <span className="text-white font-black">{time.toLocaleTimeString()}</span>
+          <LiveClock />
         </div>
       </div>
 
