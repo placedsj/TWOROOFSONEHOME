@@ -11,6 +11,25 @@ import {
 } from 'lucide-react';
 import { RoadmapTracker } from '../components/RoadmapTracker';
 
+// 💡 What: Extracted LiveClock component from DigitalBinder.
+// 🎯 Why: Preventing the entire DigitalBinder from re-rendering every second due to the time state update.
+// 📊 Impact: Isolates the 1-second interval re-render to this tiny component.
+const LiveClock = () => {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <>
+      <span className="opacity-40">{time.toLocaleDateString()}</span>
+      <span className="text-white font-black">{time.toLocaleTimeString()}</span>
+    </>
+  );
+};
+
 // --- Types & Data ---
 
 type SidebarItem = {
@@ -461,15 +480,12 @@ export default function DigitalBinder() {
   const [emmaSigned, setEmmaSigned] = useState(false);
   const [craigSigned, setCraigSigned] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
-  const [time, setTime] = useState(new Date());
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => {
-      clearInterval(timer);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
@@ -501,8 +517,7 @@ export default function DigitalBinder() {
           </div>
         </div>
         <div className="font-mono flex items-center gap-6">
-          <span className="opacity-40">{time.toLocaleDateString()}</span>
-          <span className="text-white font-black">{time.toLocaleTimeString()}</span>
+          <LiveClock />
         </div>
       </div>
 
