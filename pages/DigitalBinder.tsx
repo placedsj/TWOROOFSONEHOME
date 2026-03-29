@@ -532,7 +532,7 @@ export default function DigitalBinder() {
             </button>
             <button 
                onClick={() => setShowReader(true)} 
-               className="px-8 py-4 bg-royal-950 hover:bg-royal-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-royal-900/20 flex items-center gap-3 active:scale-95 transition-all"
+               className="px-8 py-4 bg-royal-950 hover:bg-royal-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-royal-900/20 flex items-center gap-3 active:scale-95 transition-all focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-royal-900 focus-visible:ring-offset-2"
             >
               <Scroll size={22} /> <span className="hidden sm:inline">Open Directive</span>
             </button>
@@ -716,13 +716,15 @@ export default function DigitalBinder() {
              <div className="flex gap-6 relative z-10">
                 <button 
                    onClick={toggleSpeech} 
-                   className={`flex items-center gap-4 px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 ${isSpeaking ? 'bg-red-500 animate-pulse shadow-[0_0_40px_rgba(239,68,68,0.4)]' : 'bg-royal-800 hover:bg-royal-700 border border-white/10'}`}
+                   aria-label={isSpeaking ? "Stop Voice Feed" : "Start Voice Feed"}
+                   className={`flex items-center gap-4 px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-royal-950 ${isSpeaking ? 'bg-red-500 animate-pulse shadow-[0_0_40px_rgba(239,68,68,0.4)]' : 'bg-royal-800 hover:bg-royal-700 border border-white/10'}`}
                 >
                    {isSpeaking ? <><StopCircle size={24}/> Deactivate</> : <><Headphones size={24}/> Voice Feed</>}
                 </button>
                 <button 
                    onClick={() => setShowReader(false)} 
-                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
+                   aria-label="Close Reader" title="Close Reader"
+                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-royal-950"
                 >
                    <X size={36} />
                 </button>
@@ -814,7 +816,8 @@ export default function DigitalBinder() {
               </div>
               <button 
                 onClick={() => setShowGlossary(false)} 
-                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
+                aria-label="Close Glossary" title="Close Glossary"
+                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-royal-900"
               >
                 <X size={48} />
               </button>
