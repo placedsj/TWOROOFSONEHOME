@@ -1,0 +1,3 @@
+## 2026-03-29 - Component Extraction for Fast-Updating State
+**Learning:** Placing a `setInterval` that updates state every second directly within a massive, top-level React component (like `DigitalBinder.tsx`) causes the entire page tree to re-render unnecessarily every second, severely degrading performance and layout calculations.
+**Action:** Always extract fast-updating state (such as a live clock or localized timers) into its own small, isolated component. This contains the re-renders exclusively to the small component, saving the parent component and its countless children from needless React reconciliation cycles.
