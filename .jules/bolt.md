@@ -1,0 +1,3 @@
+## 2024-05-20 - Unnecessary Clock Re-renders
+**Learning:** Found an anti-pattern where a live clock (`setInterval` updating a `time` state every second) was placed at the very top level of the `DigitalBinder` main page component. Because React re-renders the component and all its children when state changes, this caused the massive main page (with modals, animations, interactive elements) to re-render completely every single second, needlessly consuming CPU and killing performance.
+**Action:** Extract fast-updating state (like a ticking clock) into its own isolated, small React component. By rendering `<Clock />` instead, only the tiny clock component re-renders every second, preserving the rest of the application's performance.
