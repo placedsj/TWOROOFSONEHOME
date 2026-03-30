@@ -1,0 +1,4 @@
+## 2024-03-24 - Vite Client-Side Secrets Exposure
+**Vulnerability:** The server-side environment variable `GEMINI_API_KEY` was exposed to the client-side bundle via the Vite `define` config (`'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)`).
+**Learning:** Vite's `define` configuration performs static string replacement at build time. Using it to map sensitive backend environment variables to client-side globals like `process.env` directly embeds the plaintext secret into the client bundle, which is accessible to any user.
+**Prevention:** Never use Vite `define` or `import.meta.env` to inject sensitive backend secrets into the frontend. Ensure API requests involving secrets are proxied through a backend server. If polyfilling `process.env` is required to prevent library crashes, simply use `define: { 'process.env': {} }`.
