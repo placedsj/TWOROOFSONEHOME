@@ -114,7 +114,9 @@ const MaternalDirectiveControl = () => {
              <button 
                key={d.id}
                onClick={() => setActiveDomain(d.id)}
-               className={`p-3 rounded-2xl transition-all ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+               aria-label={d.title}
+               title={d.title}
+               className={`p-3 rounded-2xl transition-all focus-visible:ring-2 focus-visible:outline-none ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
              >
                {d.icon}
              </button>
@@ -722,7 +724,9 @@ export default function DigitalBinder() {
                 </button>
                 <button 
                    onClick={() => setShowReader(false)} 
-                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
+                   aria-label="Close Reader"
+                   title="Close Reader"
+                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-white"
                 >
                    <X size={36} />
                 </button>
@@ -781,11 +785,13 @@ export default function DigitalBinder() {
              </button>
              <div className="flex gap-6">
                {AGREEMENT_PAGES.map((_, i) => (
-                 <div 
+                 <button
                    key={i} 
                    onClick={() => setReaderPage(i)}
-                   className={`h-3 rounded-full cursor-pointer transition-all duration-1000 ${i === readerPage ? 'bg-royal-950 w-24 shadow-2xl' : 'bg-slate-200 w-6 hover:bg-slate-300'}`}
-                 ></div>
+                   aria-label={`Go to page ${i + 1}`}
+                   aria-current={i === readerPage ? "page" : undefined}
+                   className={`h-3 rounded-full cursor-pointer transition-all duration-1000 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-royal-500 ${i === readerPage ? 'bg-royal-950 w-24 shadow-2xl' : 'bg-slate-200 w-6 hover:bg-slate-300'}`}
+                 ></button>
                ))}
              </div>
              <button 
@@ -814,7 +820,9 @@ export default function DigitalBinder() {
               </div>
               <button 
                 onClick={() => setShowGlossary(false)} 
-                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
+                aria-label="Close Lexicon"
+                title="Close Lexicon"
+                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-royal-500"
               >
                 <X size={48} />
               </button>
