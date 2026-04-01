@@ -112,9 +112,10 @@ const MaternalDirectiveControl = () => {
         <div className="flex gap-2">
            {domains.map(d => (
              <button 
+               aria-label={d.title}
                key={d.id}
                onClick={() => setActiveDomain(d.id)}
-               className={`p-3 rounded-2xl transition-all ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+               className={`p-3 rounded-2xl transition-all focus-visible:ring-2 focus-visible:outline-none ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
              >
                {d.icon}
              </button>
@@ -385,7 +386,7 @@ const InteractiveExhibit = () => {
         <button 
           onClick={generate}
           disabled={isGenerating}
-          className={`group flex items-center gap-3 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all ${isGenerating ? 'bg-royal-800 text-royal-500 cursor-not-allowed' : 'bg-gold-600 text-royal-950 hover:bg-gold-500 active:scale-95 shadow-xl shadow-gold-500/20'}`}
+          className={`group flex items-center gap-3 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all focus-visible:ring-2 focus-visible:outline-none ${isGenerating ? 'bg-royal-800 text-royal-500 cursor-not-allowed' : 'bg-gold-600 text-royal-950 hover:bg-gold-500 active:scale-95 shadow-xl shadow-gold-500/20'}`}
         >
           {isGenerating ? <RefreshCw className="animate-spin" size={18} /> : <Zap size={18} className="group-hover:animate-bounce" />}
           {isGenerating ? 'VERIFYING...' : 'RUN VERIFICATION'}
@@ -721,8 +722,9 @@ export default function DigitalBinder() {
                    {isSpeaking ? <><StopCircle size={24}/> Deactivate</> : <><Headphones size={24}/> Voice Feed</>}
                 </button>
                 <button 
+                   aria-label="Close Reader"
                    onClick={() => setShowReader(false)} 
-                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
+                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl focus-visible:ring-2 focus-visible:outline-none"
                 >
                    <X size={36} />
                 </button>
@@ -813,8 +815,9 @@ export default function DigitalBinder() {
                 <h2 className="text-6xl font-serif font-black text-royal-950 tracking-tighter">Agreement Lexicon</h2>
               </div>
               <button 
+                aria-label="Close Glossary"
                 onClick={() => setShowGlossary(false)} 
-                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
+                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90 focus-visible:ring-2 focus-visible:outline-none"
               >
                 <X size={48} />
               </button>
