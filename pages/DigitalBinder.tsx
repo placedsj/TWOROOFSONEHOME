@@ -113,8 +113,9 @@ const MaternalDirectiveControl = () => {
            {domains.map(d => (
              <button 
                key={d.id}
+               aria-label={d.title}
                onClick={() => setActiveDomain(d.id)}
-               className={`p-3 rounded-2xl transition-all ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+               className={`p-3 rounded-2xl transition-all focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-royal-500 ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
              >
                {d.icon}
              </button>
@@ -721,8 +722,9 @@ export default function DigitalBinder() {
                    {isSpeaking ? <><StopCircle size={24}/> Deactivate</> : <><Headphones size={24}/> Voice Feed</>}
                 </button>
                 <button 
+                   aria-label="Close Reader"
                    onClick={() => setShowReader(false)} 
-                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
+                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-royal-500"
                 >
                    <X size={36} />
                 </button>
@@ -813,8 +815,9 @@ export default function DigitalBinder() {
                 <h2 className="text-6xl font-serif font-black text-royal-950 tracking-tighter">Agreement Lexicon</h2>
               </div>
               <button 
+                aria-label="Close Glossary"
                 onClick={() => setShowGlossary(false)} 
-                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
+                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-royal-500"
               >
                 <X size={48} />
               </button>
