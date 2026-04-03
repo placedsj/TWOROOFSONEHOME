@@ -454,6 +454,23 @@ const SidebarCard: React.FC<{ item: SidebarItem }> = ({ item }) => {
 
 // --- Main Application Component ---
 
+// ⚡ Bolt Optimization: Extracted LiveClock to its own component.
+// This prevents the massive DigitalBinder parent component from
+// unnecessarily re-rendering every second just to update the time.
+const LiveClock = () => {
+  const [time, setTime] = useState(new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+  return (
+    <>
+      <span className="opacity-40">{time.toLocaleDateString()}</span>
+      <span className="text-white font-black">{time.toLocaleTimeString()}</span>
+    </>
+  );
+};
+
 export default function DigitalBinder() {
   const [showReader, setShowReader] = useState(false);
   const [readerPage, setReaderPage] = useState(0);
@@ -461,15 +478,12 @@ export default function DigitalBinder() {
   const [emmaSigned, setEmmaSigned] = useState(false);
   const [craigSigned, setCraigSigned] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
-  const [time, setTime] = useState(new Date());
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => {
-      clearInterval(timer);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
@@ -501,8 +515,7 @@ export default function DigitalBinder() {
           </div>
         </div>
         <div className="font-mono flex items-center gap-6">
-          <span className="opacity-40">{time.toLocaleDateString()}</span>
-          <span className="text-white font-black">{time.toLocaleTimeString()}</span>
+          <LiveClock />
         </div>
       </div>
 
