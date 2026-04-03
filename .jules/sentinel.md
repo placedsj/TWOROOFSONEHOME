@@ -1,0 +1,4 @@
+## 2024-05-24 - Vite config statically replaces environment variables
+**Vulnerability:** The `vite.config.ts` file was using the `define` option to map `process.env.GEMINI_API_KEY` to the `env.GEMINI_API_KEY` from the server environment. This causes Vite to perform static string replacement at build time, directly embedding the plaintext API key secret into the client bundle.
+**Learning:** Vite's `define` property is evaluated at build time. Mapping sensitive server-side environment variables to client-side globals like `process.env` directly leaks them into the frontend build.
+**Prevention:** Never use Vite's `define` configuration for sensitive server-side environment variables. If a frontend client needs to access a secure service, it should do so via a secure backend proxy or serverless function instead.
