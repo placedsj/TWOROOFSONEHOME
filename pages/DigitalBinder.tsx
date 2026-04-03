@@ -114,6 +114,9 @@ const MaternalDirectiveControl = () => {
              <button 
                key={d.id}
                onClick={() => setActiveDomain(d.id)}
+               aria-label={`Select ${d.id} Domain`}
+               aria-pressed={activeDomain === d.id}
+               title={`Select ${d.id} Domain`}
                className={`p-3 rounded-2xl transition-all ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
              >
                {d.icon}
@@ -722,6 +725,8 @@ export default function DigitalBinder() {
                 </button>
                 <button 
                    onClick={() => setShowReader(false)} 
+                   aria-label="Close Reader"
+                   title="Close Reader"
                    className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
                 >
                    <X size={36} />
@@ -781,11 +786,13 @@ export default function DigitalBinder() {
              </button>
              <div className="flex gap-6">
                {AGREEMENT_PAGES.map((_, i) => (
-                 <div 
+                 <button
                    key={i} 
                    onClick={() => setReaderPage(i)}
+                   aria-label={`Go to page ${i + 1}`}
+                   aria-current={i === readerPage ? 'page' : undefined}
                    className={`h-3 rounded-full cursor-pointer transition-all duration-1000 ${i === readerPage ? 'bg-royal-950 w-24 shadow-2xl' : 'bg-slate-200 w-6 hover:bg-slate-300'}`}
-                 ></div>
+                 ></button>
                ))}
              </div>
              <button 
@@ -814,6 +821,8 @@ export default function DigitalBinder() {
               </div>
               <button 
                 onClick={() => setShowGlossary(false)} 
+                aria-label="Close Lexicon"
+                title="Close Lexicon"
                 className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
               >
                 <X size={48} />
