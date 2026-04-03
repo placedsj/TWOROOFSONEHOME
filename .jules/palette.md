@@ -1,0 +1,3 @@
+## 2025-04-03 - Accessible Icon-Only Buttons
+**Learning:** Dynamically rendered React components frequently contain standalone icon-only buttons (like `X` to close) that completely lack screen reader visibility, hover explanations, and visible keyboard focus states, causing significant accessibility barriers.
+**Action:** Always include an `aria-label` for screen readers, a `title` for mouse hover tooltips, and explicit `focus-visible:ring-2 focus-visible:outline-none` Tailwind classes to ensure consistent keyboard focus visibility and reset browser defaults on all icon-only interactive elements.
