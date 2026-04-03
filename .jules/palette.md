@@ -1,0 +1,3 @@
+## 2024-03-14 - Icon-Only Button Accessibility in Interactive Modals
+**Learning:** In dynamically rendered components like modals and interactive panels, standalone icon-only buttons (like modal close buttons or mode switches) frequently miss ARIA labels, creating severe navigation issues for screen reader users. Adding `focus-visible` styles is also crucial here since these are primary interaction points for keyboard navigation within the modals.
+**Action:** Always verify that interactive buttons, especially those using Lucide icons without visible text, explicitly provide an `aria-label` and `title` alongside `focus-visible:ring-2 focus-visible:outline-none` for full accessibility.
