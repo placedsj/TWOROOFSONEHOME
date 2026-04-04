@@ -1,0 +1,4 @@
+## 2024-04-04 - Exposed Secrets in Vite Configuration
+**Vulnerability:** The `GEMINI_API_KEY` server-side environment variable was directly mapped to client-side globals `process.env.API_KEY` and `process.env.GEMINI_API_KEY` using Vite's `define` configuration. This embeds the plaintext secret directly into the production client bundle.
+**Learning:** Vite's `define` performs static string replacement at build time. Using it to inject server secrets into the client code inherently exposes them to users, even if the variables are never actively referenced in the frontend codebase.
+**Prevention:** Never map sensitive server-side environment variables to client-side globals. If a frontend needs an API key, use secure backend proxy endpoints or verify that the secret is genuinely intended to be public before embedding it.
