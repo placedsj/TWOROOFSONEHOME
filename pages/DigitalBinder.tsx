@@ -115,6 +115,8 @@ const MaternalDirectiveControl = () => {
                key={d.id}
                onClick={() => setActiveDomain(d.id)}
                className={`p-3 rounded-2xl transition-all ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+               aria-label={d.title}
+               title={d.title}
              >
                {d.icon}
              </button>
@@ -723,6 +725,8 @@ export default function DigitalBinder() {
                 <button 
                    onClick={() => setShowReader(false)} 
                    className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
+                   aria-label="Close Reader"
+                   title="Close Reader"
                 >
                    <X size={36} />
                 </button>
@@ -815,6 +819,8 @@ export default function DigitalBinder() {
               <button 
                 onClick={() => setShowGlossary(false)} 
                 className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
+                aria-label="Close Lexicon"
+                title="Close Lexicon"
               >
                 <X size={48} />
               </button>
