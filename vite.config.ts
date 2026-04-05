@@ -11,10 +11,9 @@ export default defineConfig(({ mode }) => {
         host: '0.0.0.0',
       },
       plugins: [react(), tailwindcss()],
-      define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
-      },
+      // 🛡️ SECURITY WARNING: Do not inject GEMINI_API_KEY into the client bundle via `define`.
+      // If the client needs to interact with the Gemini API, proxy the requests through a
+      // secure backend API route to protect the credentials.
       resolve: {
         alias: {
           '@': path.resolve(__dirname, '.'),
