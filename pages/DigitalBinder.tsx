@@ -114,6 +114,8 @@ const MaternalDirectiveControl = () => {
              <button 
                key={d.id}
                onClick={() => setActiveDomain(d.id)}
+               aria-label={`View ${d.title} directive`}
+               title={`View ${d.title} directive`}
                className={`p-3 rounded-2xl transition-all ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
              >
                {d.icon}
@@ -721,7 +723,9 @@ export default function DigitalBinder() {
                    {isSpeaking ? <><StopCircle size={24}/> Deactivate</> : <><Headphones size={24}/> Voice Feed</>}
                 </button>
                 <button 
-                   onClick={() => setShowReader(false)} 
+                   onClick={() => setShowReader(false)}
+                   aria-label="Close reader"
+                   title="Close reader"
                    className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
                 >
                    <X size={36} />
@@ -813,7 +817,9 @@ export default function DigitalBinder() {
                 <h2 className="text-6xl font-serif font-black text-royal-950 tracking-tighter">Agreement Lexicon</h2>
               </div>
               <button 
-                onClick={() => setShowGlossary(false)} 
+                onClick={() => setShowGlossary(false)}
+                aria-label="Close lexicon"
+                title="Close lexicon"
                 className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
               >
                 <X size={48} />
