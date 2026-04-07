@@ -749,7 +749,7 @@ export default function DigitalBinder() {
                    <div className="pt-32 opacity-10 hover:opacity-50 transition-opacity duration-1000">
                       <div className="h-[2px] w-full bg-slate-200"></div>
                       <div className="flex justify-between py-10 font-mono text-[10px] uppercase tracking-widest font-black">
-                         <span>SECURE HASH: 0x{Math.random().toString(16).substr(2, 16).toUpperCase()}</span>
+                         <span>SECURE HASH: 0x{Array.from(crypto.getRandomValues(new Uint8Array(8))).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase()}</span>
                          <span>PAGE AUTHENTICATION {readerPage + 1} of {AGREEMENT_PAGES.length}</span>
                       </div>
                    </div>
