@@ -1,0 +1,3 @@
+## 2024-04-08 - Added Accessible Labels to Modal and Domain Icon-only Buttons
+**Learning:** Found an accessibility issue pattern specific to `DigitalBinder.tsx` where icon-only buttons (like those for closing modals and switching domains) lacked both `aria-label` for screen readers and `title` for hover tooltips, breaking WCAG standards for interactive elements and degrading the user experience for assistive tech users.
+**Action:** Always ensure icon-only interactive elements in React components are accompanied by descriptive, localized `aria-label` and `title` attributes that clarify their action (e.g. 'Close Lexicon', 'View Lifestyle domain').
