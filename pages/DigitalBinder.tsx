@@ -114,7 +114,10 @@ const MaternalDirectiveControl = () => {
              <button 
                key={d.id}
                onClick={() => setActiveDomain(d.id)}
-               className={`p-3 rounded-2xl transition-all ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+               aria-label={`Select ${d.title} Domain`}
+               aria-pressed={activeDomain === d.id}
+               title={`Select ${d.title} Domain`}
+               className={`p-3 rounded-2xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
              >
                {d.icon}
              </button>
@@ -722,7 +725,9 @@ export default function DigitalBinder() {
                 </button>
                 <button 
                    onClick={() => setShowReader(false)} 
-                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
+                   aria-label="Close Directive Reader"
+                   title="Close Directive Reader"
+                   className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
                 >
                    <X size={36} />
                 </button>
@@ -814,7 +819,9 @@ export default function DigitalBinder() {
               </div>
               <button 
                 onClick={() => setShowGlossary(false)} 
-                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
+                aria-label="Close Agreement Lexicon"
+                title="Close Agreement Lexicon"
+                className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-royal-900"
               >
                 <X size={48} />
               </button>
