@@ -1,0 +1,3 @@
+## 2024-04-09 - Unnecessary Re-renders via `setInterval` State
+**Learning:** Found an anti-pattern in `pages/DigitalBinder.tsx` where a `setInterval` hook updates a top-level `time` state every second. This forces the entire heavy `DigitalBinder` component (and all its children) to re-render every second, just to display the current time in the top bar. This is a massive performance bottleneck for a large component tree.
+**Action:** Extract the clock logic into its own isolated `LiveClock` component. This ensures only the tiny clock component re-renders every second, preserving the performance of the rest of the application.
