@@ -1,0 +1,3 @@
+## 2025-04-09 - Accessible Icon-only Buttons
+**Learning:** Icon-only buttons (like the domain selection, close directive reader, and close lexicon buttons) in the Digital Binder lacked accessibility attributes and focus rings, leading to a poor experience for keyboard and screen reader users. The application relies heavily on visual cues.
+**Action:** Always add `aria-label`, `title`, and `focus-visible` styling (like `focus-visible:ring-2`) to icon-only interactive elements to ensure they are properly announced by screen readers and clearly identifiable when focused via keyboard. Use `aria-pressed` for toggle states.
