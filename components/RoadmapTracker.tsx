@@ -4,13 +4,8 @@ import { calculateSunriseProgress, calculateJubileeGraceValue, calculateJaneBloc
 import { Sun, Lock, ShieldCheck, Clock, TrendingDown, ChevronRight, Zap } from 'lucide-react';
 
 export const RoadmapTracker = () => {
-  const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setNow(new Date()), 60000);
-    return () => clearInterval(timer);
-  }, []);
-
+  // ⚡ Bolt Optimization: Removed unused `now` state and its 60s `setInterval`
+  // that was unnecessarily triggering full-component re-renders of the tracker
   const sunrise = calculateSunriseProgress();
   const jubilee = calculateJubileeGraceValue(sunrise.percentage);
   const janeBlock = calculateJaneBlock();

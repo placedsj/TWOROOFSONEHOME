@@ -1,0 +1,3 @@
+## 2024-04-10 - Unnecessary Timer Re-Renders in React Components
+**Learning:** The `DigitalBinder.tsx` component (which is >800 lines long) was re-rendering every single second because of a `setInterval` hook tracking the current time for a tiny clock display in the Top Bar. This caused the entire massive component, including complex nested state and UI, to re-render constantly. A similar issue existed in `RoadmapTracker.tsx` where an unused `now` state was updated every minute, triggering re-renders even though the state wasn't used.
+**Action:** Extract fast-updating state (like a live clock) into isolated, small components to prevent unnecessary re-renders of large parent components. For unused state triggering re-renders, simply remove it.
