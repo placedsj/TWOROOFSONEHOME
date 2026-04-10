@@ -114,6 +114,8 @@ const MaternalDirectiveControl = () => {
              <button 
                key={d.id}
                onClick={() => setActiveDomain(d.id)}
+               aria-label={`View ${d.title} Domain`}
+               title={`View ${d.title} Domain`}
                className={`p-3 rounded-2xl transition-all ${activeDomain === d.id ? 'bg-royal-900 text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
              >
                {d.icon}
@@ -526,12 +528,16 @@ export default function DigitalBinder() {
             <div className="h-10 w-px bg-slate-200 mx-2"></div>
             <button 
                onClick={() => setShowGlossary(true)} 
+               aria-label="Open Lexicon"
+               title="Open Lexicon"
                className="hidden md:flex px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all items-center gap-3 border border-slate-200 active:scale-95"
             >
               <BookOpen size={18} /> Lexicon
             </button>
             <button 
                onClick={() => setShowReader(true)} 
+               aria-label="Open Directive"
+               title="Open Directive"
                className="px-8 py-4 bg-royal-950 hover:bg-royal-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl shadow-royal-900/20 flex items-center gap-3 active:scale-95 transition-all"
             >
               <Scroll size={22} /> <span className="hidden sm:inline">Open Directive</span>
@@ -716,12 +722,16 @@ export default function DigitalBinder() {
              <div className="flex gap-6 relative z-10">
                 <button 
                    onClick={toggleSpeech} 
+                   aria-label={isSpeaking ? "Deactivate Voice Feed" : "Activate Voice Feed"}
+                   title={isSpeaking ? "Deactivate Voice Feed" : "Activate Voice Feed"}
                    className={`flex items-center gap-4 px-10 py-5 rounded-3xl font-black text-xs uppercase tracking-[0.2em] transition-all duration-500 ${isSpeaking ? 'bg-red-500 animate-pulse shadow-[0_0_40px_rgba(239,68,68,0.4)]' : 'bg-royal-800 hover:bg-royal-700 border border-white/10'}`}
                 >
                    {isSpeaking ? <><StopCircle size={24}/> Deactivate</> : <><Headphones size={24}/> Voice Feed</>}
                 </button>
                 <button 
                    onClick={() => setShowReader(false)} 
+                   aria-label="Close Reader"
+                   title="Close Reader"
                    className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
                 >
                    <X size={36} />
@@ -814,6 +824,8 @@ export default function DigitalBinder() {
               </div>
               <button 
                 onClick={() => setShowGlossary(false)} 
+                aria-label="Close Glossary"
+                title="Close Glossary"
                 className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
               >
                 <X size={48} />
