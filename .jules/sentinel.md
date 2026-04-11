@@ -1,0 +1,4 @@
+## 2024-04-11 - Exposed Environment Variables via Vite Define
+**Vulnerability:** The application exposed sensitive environment variables (`GEMINI_API_KEY`) to the client-side bundle by using Vite's `define` configuration to stringify and inject them as `process.env` properties.
+**Learning:** Using `define` to inject backend environment variables directly into a frontend build hardcodes those secrets into the public client bundle, leading to critical secret exposure. Additionally, simply removing the `define` block can cause `ReferenceError: process is not defined` if legacy code expects it.
+**Prevention:** Never map sensitive backend API keys to Vite's `define` block. When removing insecure `define` mappings for `process.env`, safely stub them out with `'undefined'` to prevent runtime reference errors while ensuring secrets are not leaked.
