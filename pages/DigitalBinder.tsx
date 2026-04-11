@@ -723,6 +723,8 @@ export default function DigitalBinder() {
                 <button 
                    onClick={() => setShowReader(false)} 
                    className="p-5 bg-royal-800 hover:bg-red-500 rounded-3xl transition-all border border-white/10 active:scale-95 shadow-xl"
+                   aria-label="Close Directive Reader"
+                   title="Close Directive Reader"
                 >
                    <X size={36} />
                 </button>
@@ -815,6 +817,8 @@ export default function DigitalBinder() {
               <button 
                 onClick={() => setShowGlossary(false)} 
                 className="p-4 bg-slate-100 hover:bg-red-50 hover:text-red-500 rounded-3xl transition-all active:scale-90"
+                aria-label="Close Lexicon"
+                title="Close Lexicon"
               >
                 <X size={48} />
               </button>
