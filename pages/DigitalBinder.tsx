@@ -93,6 +93,27 @@ const SanctuaryLayout = () => {
   );
 };
 
+// ⚡ Bolt Optimization:
+// Extracted the rapidly updating `time` state and `setInterval` from the top-level
+// DigitalBinder component into this localized TopBarClock component.
+// This prevents the entire DigitalBinder tree from re-rendering every 1 second,
+// significantly improving overall application responsiveness.
+const TopBarClock = () => {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="font-mono flex items-center gap-6">
+      <span className="opacity-40">{time.toLocaleDateString()}</span>
+      <span className="text-white font-black">{time.toLocaleTimeString()}</span>
+    </div>
+  );
+};
+
 const MaternalDirectiveControl = () => {
   const [activeDomain, setActiveDomain] = useState('lifestyle');
 
@@ -461,15 +482,12 @@ export default function DigitalBinder() {
   const [emmaSigned, setEmmaSigned] = useState(false);
   const [craigSigned, setCraigSigned] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
-  const [time, setTime] = useState(new Date());
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => {
-      clearInterval(timer);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
@@ -500,10 +518,7 @@ export default function DigitalBinder() {
              <Shield size={14} /> THE HARPER BASELINE PROTOCOL
           </div>
         </div>
-        <div className="font-mono flex items-center gap-6">
-          <span className="opacity-40">{time.toLocaleDateString()}</span>
-          <span className="text-white font-black">{time.toLocaleTimeString()}</span>
-        </div>
+        <TopBarClock />
       </div>
 
       {/* Modern Sticky Nav */}
