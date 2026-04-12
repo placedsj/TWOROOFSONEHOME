@@ -1,0 +1,3 @@
+## 2024-05-28 - Unnecessary Timer State in Top-level Layout Component
+**Learning:** In React applications, setting rapid interval timers (like a 1-second clock timer) in high-level components like `DigitalBinder.tsx` causes the entire component tree to re-render every second. This codebase handles large amounts of DOM and child components in `DigitalBinder`, which amplifies this performance bottleneck.
+**Action:** Extract localized fast-updating state (like `time`) and its corresponding `useEffect` interval into isolated, dedicated child components (like a `Clock` component) to restrict the scope of re-renders only to the small part of the UI that actually needs updating.
