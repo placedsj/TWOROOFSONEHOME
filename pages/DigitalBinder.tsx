@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
+import Clock from '../components/Clock';
 import { 
   Shield, Scale, Users, FileCheck, Heart, Calendar, 
   BookOpen, AlertTriangle, CheckCircle, X, ChevronRight, 
@@ -461,15 +462,12 @@ export default function DigitalBinder() {
   const [emmaSigned, setEmmaSigned] = useState(false);
   const [craigSigned, setCraigSigned] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
-  const [time, setTime] = useState(new Date());
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => {
-      clearInterval(timer);
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
@@ -500,10 +498,7 @@ export default function DigitalBinder() {
              <Shield size={14} /> THE HARPER BASELINE PROTOCOL
           </div>
         </div>
-        <div className="font-mono flex items-center gap-6">
-          <span className="opacity-40">{time.toLocaleDateString()}</span>
-          <span className="text-white font-black">{time.toLocaleTimeString()}</span>
-        </div>
+        <Clock />
       </div>
 
       {/* Modern Sticky Nav */}
