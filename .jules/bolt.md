@@ -1,0 +1,3 @@
+## 2024-04-14 - Isolate Rapid State Changes to Prevent Full-Tree Re-renders
+**Learning:** Found a common anti-pattern where a rapidly updating state value (a clock using `setInterval`) was placed in the top-level `DigitalBinder` layout component. This causes unnecessary full-tree re-renders every second, wasting CPU cycles and potentially causing jank in an otherwise static interface.
+**Action:** Always isolate rapidly updating state (like clocks, progress bars, or active polling indicators) into their own dedicated, low-level leaf components so their state updates do not trigger cascading re-renders in heavy parent layouts.
