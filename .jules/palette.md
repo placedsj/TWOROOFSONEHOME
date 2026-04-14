@@ -1,0 +1,3 @@
+## 2024-04-14 - Icon-Only Button Accessibility Pattern
+**Learning:** Found several icon-only buttons (like modal close buttons and domain selectors) in DigitalBinder that lacked accessible names. When iterating over domain configurations to render icon-only controls, the configuration object's `title` property serves perfectly as the source for both `aria-label` (for screen readers) and `title` (for native tooltips).
+**Action:** Always verify icon-only interactive elements in modal headers or dynamic lists include `aria-label` and `title` attributes pointing to their descriptive text to ensure both visual and non-visual accessibility.
