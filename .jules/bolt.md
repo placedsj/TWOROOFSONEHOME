@@ -1,0 +1,3 @@
+## 2024-04-15 - Unnecessary Full-Tree Re-renders from Top-Level Timers
+**Learning:** Found a performance bottleneck where a `setInterval` timer (used for updating the system clock every second) was placed at the very top of `pages/DigitalBinder.tsx`. Since state updates trigger re-renders, this caused the *entire* massive DigitalBinder component tree (and all of its deeply nested, complex children) to re-render every single second, drastically degrading application performance and responsiveness.
+**Action:** Always isolate rapidly updating state (like clocks or live data feeds) into dedicated, small leaf components (e.g. `SystemClock`) to prevent unnecessary full-tree re-renders.
