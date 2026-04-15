@@ -1,0 +1,4 @@
+## 2025-04-15 - Vite Content Security Policy Constraints
+**Vulnerability:** Missing Content Security Policy (CSP) headers, making the application more susceptible to XSS attacks.
+**Learning:** When implementing CSP in a Vite development environment, strict policies can break essential tooling. Specifically, `script-src` must include `'unsafe-inline'` and `'unsafe-eval'` for Vite's module loader and HMR to function. Furthermore, `connect-src` must include `ws:` and `wss:` to allow the HMR websocket connections. Without these, the development server becomes unusable. Additionally, we must whitelist necessary external resources like `https://www.transparenttextures.com` in `img-src` to preserve application styling.
+**Prevention:** Always verify CSP configurations against both development tooling requirements (like Vite's HMR) and application-specific external dependencies before deployment to avoid breaking core functionality.
